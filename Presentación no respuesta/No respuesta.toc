@@ -1,0 +1,14 @@
+\select@language {spanish}
+\beamer@sectionintoc {1}{Estimaci\'on en presencia de no respuesta de unidades}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Un modelo inocente}{4}{0}{1}
+\beamer@subsectionintoc {1}{2}{Grupos de respuesta homog\'enea (RHG)}{8}{0}{1}
+\beamer@subsectionintoc {1}{3}{Estimadores que usan solamente pesos}{11}{0}{1}
+\beamer@subsubsectionintoc {1}{3}{1}{Ejemplo: weighting class estimator}{15}{0}{1}
+\beamer@subsectionintoc {1}{4}{Estimadores que usan pesos y variables auxiliares}{17}{0}{1}
+\beamer@subsubsectionintoc {1}{4}{1}{Ejemplo: ratio estimator with weighting class adjustment}{22}{0}{1}
+\beamer@subsubsectionintoc {1}{4}{2}{EJEMPLO: post-estratificaci\'on (caso 1)}{25}{0}{1}
+\beamer@subsubsectionintoc {1}{4}{3}{EJEMPLO: post-estratificaci\'on (caso 2)}{26}{0}{1}
+\beamer@sectionintoc {2}{Imputaci\'on}{29}{0}{2}
+\beamer@subsectionintoc {2}{1}{Response set approach}{31}{0}{2}
+\beamer@subsectionintoc {2}{2}{Clean data matrix approach}{32}{0}{2}
+\beamer@subsectionintoc {2}{3}{M\'etodos de predicci\'on imperfecta}{33}{0}{2}

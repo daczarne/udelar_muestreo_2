@@ -1,0 +1,773 @@
+\documentclass[10pt]{beamer}
+\usetheme{Madrid}
+
+\usepackage[spanish]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{forest}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{tasks}
+
+\title{No Respuesta}
+\subtitle{Cap. 15 - Model Assisted Survey Sampling - Erik Sarndal}
+\author{Daniel Czarnievicz \\ Lucía Coudet}
+\institute{Universidad de la República}
+\date{Martes 29 de Noviembre de 2017}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Índice}
+\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Estimación en presencia de no respuesta de unidades}
+
+\begin{frame}{Planteamiento del problema}
+
+Se toma una muestra $S$ de tamaño $n_s$ de la población finita $U = (1; \ldots; \, k; \ldots; \, N)$, bajo un diseño $p(.)$ con probabilidades de inclusión:
+
+\vspace{.75cm}
+\begin{itemize}
+\item $\pi_k > 0 \:\:\: \forall \text{k} \in U$
+\item $\pi_{kl} > 0 \:\:\: \forall k;l \in U$
+\end{itemize}
+
+\vspace{.75cm}
+Se observan los valores de la variable $y_k$ solamente para un subconjunto de la muestra, $r \subset s$, de tamaño $m_r$ y por lo tanto el estimador $\hat{t}_{\pi}$ será sesgado.
+
+\vspace{.75cm}
+\begin{block}{Objetivo}
+El objetivo es lograr estimadores que sean resistentes al sesgo y con una varianza reducida.
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Un modelo inocente}
+
+\begin{frame}{Un modelo de respuesta inocente}
+
+$$ \left. \begin{array}{l l}
+P(k \in r | s) = \theta_k = \theta & \, \forall k \in s \\
+P(k;l \in r | s) = \theta_k \theta_l = \theta^2 & \forall k;l \in s
+\end{array} \right. $$
+
+\vspace{.5cm}
+
+Si hubiera respuesta completa, usaríamos el estimador de ratio:
+$$\hat{t} = \frac{N}{n} \sum\nolimits_s y_k = N \frac{ \sum\nolimits_s y_k }{ \sum\nolimits_s 1 } = N\bar{y}_s = N \frac{ \sum\nolimits_s \frac{ y_k }{ \pi_k } }{ \sum\nolimits_s \frac{ 1 }{ \pi_k } }$$
+
+Dada la no respuesta, sumamos sobre el subconjunto de respuesta $r$ y ajustamos los pesos:
+$$\hat{t}_1 = N \frac{\sum\nolimits_r \frac{y_k}{\pi_k \theta_k} }{ \sum\nolimits_r \frac{1}{\pi_k \theta_k} } = N \frac{ \sum\nolimits_r \frac{y_k}{\pi_k \theta} }{ \sum\nolimits_r \frac{1}{\pi_k \theta} } = N \frac{ \sum\nolimits_r \frac{y_k}{\pi_k} }{ \sum\nolimits_r \frac{1}{\pi_k} }$$
+
+\vspace{0.5cm}
+
+Lo anterior es equivalente a no hacer nada respecto a la no respuesta.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{El sesgo del estimador}
+
+Para calcular el sesgo del estimador anterior se deben tener en cuenta los siguientes 3 casos:
+
+\vspace{0.5cm}
+
+\begin{block}{Caso N°1: La RD es verdadera}
+\begin{itemize}
+\item El modelo de respuesta inocente es una perfecta descripción de la verdadera distribución de respuestas (RD).
+\item El estimador $\hat{t}_1$ es aproximadamente insesgado, y su sesgo despreciable es debido a que es un estimador de ratio y no a la no respuesta.
+\end{itemize}
+\end{block}	
+
+\begin{block}{Caso N°2: El modelo es falso}
+\begin{itemize}
+\item El modelo anterior no es correcto y las probabilidades de respuesta son independientes pero varían individuo a individuo:
+	\begin{itemize}
+	\item $P(k \in r | s) = \theta_k$
+	\item $P(k;l \in r | s) = \theta_k \theta_l$
+	\end{itemize}
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{El sesgo en el caso Nº 2}
+
+\textcolor{red}{Sesgo}
+
+$$ B(\hat{t}_1) = E(\hat{t}_1) - t \doteq N \frac{\sum_U y_k \theta_k}{\sum_U \theta_k} - t =  \frac{\sum_U y_k \theta_k}{\bar{\theta}_U} - t = (N-1)\frac{S_{{y\theta}_U}}{\bar{\theta}_U} =$$
+
+$$= \frac{(N-1)}{\bar{\theta}_U}R_{{y \theta}_U} S_{\theta_U} S_{y_U} = \frac{t}{N} (N-1)R_{{y \theta}_U} cv_{\theta_U} cv_{y_U} $$
+
+\vspace{.5cm}
+\textcolor{red}{Sesgo relativo}
+
+$$ RB(\hat{t}_1) = \frac{B(\hat{t}_1)}{t} \doteq R_{y\theta_U} cv_{y_U} cv(\theta_U) $$
+
+\vspace{1cm}
+Por lo tanto, cuanto mayor sea la correlación entre la variable de interés $y$ y la probabilidad de no respuesta $\theta$, mayor será el sesgo relativo.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\begin{block}{Caso N°3: Comportamiento de respuesta determinístico}
+\begin{itemize}
+\item El verdadero comportamiento de respuesta es determinístico, con un estrato de respuesta $U_1$ y uno de no respuesta $U_2$ tales que:
+	\begin{itemize}
+	\item los elementos $\text{k} \in U_1$ responden con probabilidad 1.
+	\item los elementos $\text{k} \in U_2$ responden con probabilidad 0.
+	\end{itemize}
+\end{itemize}
+\end{block}
+
+\vspace{0.5cm}
+\textcolor{red}{Sesgo}
+$$ B(\hat{t}_1) \doteq N_2(\bar{y}_{U_1} - \bar{y}_{U_2})$$
+
+\vspace{0.3cm}
+Por lo tanto, el sesgo crece con el tamaño del estrato de no respuesta ($N_2$) y la diferencia de medias entre los estratos.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Grupos de respuesta homogénea (RHG)}
+
+\begin{frame}{Grupos de respuesta homogénea (RHG)}
+
+\begin{enumerate}
+\item La muestra $s$ es particionada en $H_s$ grupos de tamaño $n_h$, de forma tal que:
+$$s = \bigcup_{h=1}^{H_s} s_h$$
+
+\item Se denomina $r_h$ de tamaño $m_h$ al subconjunto de respuesta dentro del grupo $s_h$, por lo tanto:
+$$r = \bigcup_{h=1}^{H_s} r_h \hspace{0.5cm} \text{y} \hspace{0.5cm} m = \sum_{h=1}^{H_s} m_h $$
+
+\item Se asume que, dado $s$, todos los individuos del mismo grupo presentan la misma probabilidad de no respuesta.
+
+\item $H_s$ varía de muestra en muestra. 
+
+\item La asignación del elemento $k$ varía de muestra en muestra. 
+
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Probabilidades de inclusión}
+
+\begin{block}{Probabilidades de inclusión al subconjunto de respuesta condicionales a la muestra $s$}
+\begin{itemize}
+\item $P(k \in r | s) = \pi_{k|s} = \theta_{hs} > 0 \hspace{4.07cm} \forall k \in s_h$
+\item $P(k;l \in r | s) = \pi_{k;l|s} = P(k \in r | s) P(l \in r | s) > 0 \hspace{1cm} \forall k \neq l \in s$
+\end{itemize}
+\end{block}
+
+Por lo tanto, dado $s$, si el modelo ajusta correctamente los datos entonces el set de respuesta se distribuye de acuerdo a un diseño STBE.
+
+\begin{block}{Probabilidades de inclusión condicionales a $s$ y $\bold{m}$}
+\begin{itemize}
+\item $P(k \in r | s;\bold{m}) = \pi_{k | s;\bold{m}} = \frac{m_h}{n_h} = f_h \hspace{0.3cm} \forall k \in s_h $
+\item $P(k;l \in r | s;\bold{m}) = \pi_{kl | s;\bold{m}} = 
+\left\{ \begin{array}{c l}
+	\frac{m_h}{n_h}\frac{(m_h - 1)}{(n_h - 1)} & \forall k;l \in s_h \\
+	\\
+	\frac{m_h}{n_h} \frac{m_{h'}}{n_{h'}} & k \in s_h; \, l \in s_{h'}; \, h \neq h' 
+\end{array} \right.$
+\end{itemize}
+\end{block}
+
+Por lo tanto, dados $s$ y $\bold{m}$, si el modelo ajusta correctamente los datos entonces el set de respuesta se distribuye de acuerdo a un diseño STSI.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+Surgirán dos posibles estrategias de estimación:
+
+\begin{enumerate}
+\item Estimadores que solo usan los pesos.
+\item Estimadores que usan los pesos y variables auxiliares.
+\end{enumerate}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Estimadores que usan solamente pesos}
+
+\begin{frame}{Estimadores que usan solamente pesos}
+
+\begin{block}{Pesos ajustados}
+Definimos los pesos ajustados como:
+$$\frac{1}{\pi_k^*} = \frac{1}{\pi_k \, \pi_{k|s,m}} \:\:\: \text{ donde } \frac{ 1 }{ \pi_{k | s;\bold{m}} } \text{ es el ajuste por no respuesta.}$$
+\end{block}
+
+\begin{block}{Estimador con pesos ajustados}
+$$\hat{t}_{c\pi^*} = \sum_r \frac{y_k}{\pi_k^*} = \sum_r \frac{ \check{y}_k }{\pi_{k | s,m}} = \sum_{h=1}^{H_s} \sum_{r_h} \frac{ \check{y}_k }{ \frac{m_h}{n_h} } = \sum_{h=1}^{H_s}  f_h^{-1} \sum_{r_h} \check{y}_k $$
+$$\text{donde} \hspace{0.5cm} f_h = \frac{m_h}{n_h}$$
+\end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Sesgo del estimador $\hat{t}_{c\pi^*}$}
+
+Para poder derivar el sesgo de $\hat{t}_{c\pi^*}$, primero estudiaremos su esperanza condicional a la muestra $s$:
+$$ E_{RD} ( \hat{t}_{c\pi^*} | s ) = E_m [ E_{RD} ( \hat{t}_{c\pi^*} | s;\bold{m}) ] = E_m \left[ E_{RD} \left( \sum_{h=1}^{H_s} f_h^{-1} \sum\nolimits_{r_h} \check{y}_k \Big| s;\bold{m} \right) \right] =$$
+$$= E_m \left( \sum_{h=1}^{H_s} \sum\nolimits_{s_h} \check{y}_k | s \right) = \sum\nolimits_{s} \check{y}_k = \hat{t}_{\pi} $$
+
+\vspace{0.5cm}
+Esto implica que, dada la muestra $s$, si el modelo ajusta correctamente, el estimador con pesos ajustados es, en promedio, igual a al que se hubiera obtenido de haber existido respuesta completa.
+
+\begin{block}{Observación}
+Para que el estimador con pesos ajustados sea calculable, debe ocurrir que la probabilidad del evento $ \bar{A}_1 = \lbrace m_h = 0 \:\: \text{para algún } h = 1; \ldots; \, h; \ldots; \, H_s \rbrace$ sea despreciable.
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Sesgo del estimador $\hat{t}_{c\pi^*}$}
+
+Luego, dado que la esperanza condicional en $s$ y $\bold{m}$ es el estimador $\pi$, la esperanza incondicional será:
+$$E(\hat{t}_{c\pi^*}) \, =  \, E_p \, E_{RD} \, (\hat{t}_{c\pi^*} \, | \, s \, ) \, = \, E_p \,(\hat{t}_{\pi}) \, =  \, t $$
+
+Por lo tanto, el estimador con pesos ajustados a la no respuesta es insesgado para el total de $y$ en $U$ si el modelo RHG ajusta y si $P(\bar{A}_1)$ es despreciable.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{La varianza del estimador $\hat{t}_{c\pi^*}$}
+
+Se considera otro evento $\bar{A}_2 = \lbrace{ m_H \leq 1 \,\, \text{para algún } h \rbrace}$
+
+$$ V(\hat{t}_{c\pi^*}) \, = \, V_p \, E_m \, E_s (\hat{t}_{c\pi^*}  \, | \, s \, ) \, + \, E_p \, V_m \, E_s (\hat{t}_{c\pi^*} \, | \, s \, ) \, + \, E_p \, E_m \, V_s (\hat{t}_{c\pi^*} \, | \, s \,) \Rightarrow$$
+$$\Rightarrow V(\hat{t}_{c\pi^*}) \, = \, \underbrace{\sum\sum\nolimits_U \Delta_{kl} \, \check{y}_k \, \check{y}_l}_{V(\hat{t}_{\pi})} \, + \, \underbrace{E_p \, E_m \left( \sum_{h=1}^{H_s} \frac{n_h^{2}}{(1-f_h)} \, S_{\check{y}_{sh}}^{2} \, \Big| s \right)}_{\text{incremento por no respuesta}}$$ 
+
+donde:
+\begin{itemize}
+\item $S_{\check{y}_{sh}}^{2}$ es la varianza de $\check{y}$.
+\item $E_p (.)$ es la esperanza respecto al diseño.
+\item $E_m(.|s)$ es la esperanza respecto a la distribución de $\bold{m}$, dada $s$.
+\end{itemize}
+
+\vspace{0.5cm}
+\textcolor{blue}{Estimación de la varianza}
+
+$$ \hat{V}(\hat{t}_{c\pi^*}) = \sum\sum\nolimits_r \frac{ \check{\Delta}_{kl} }{ \pi_{kl|s,m} } \, \check{y}_k\, \check{y}_l \, + \, \sum_{h=1}^{H_s} \frac{n_h^{2}}{m_h} \, (1-f_h) \, S_{y_{rh}}^{2}$$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%% EJEMPLO: weighting class estimator %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Ejemplo: weighting class estimator}
+
+\begin{frame}{Ejemplo: weighting class estimator}
+
+Supongamos el caso en que una muestra $s$ de tamaño $n$ es tomada de una población $U$ mediante un diseño SI.
+
+$$ {\color{red} \star } \:\:\: \hat{t}_{c \pi^*} = \frac{ N }{ n } \sum\limits_{h=1}^{H_s} n_h \, \bar{y}_{r_h} = N \, \hat{\bar{y}}_U \:\:\: \text{ conocido como \textit{weighting class estimator}}$$
+
+$$ {\color{red} \star } \:\:\: V( \hat{t}_{c \pi^*} ) = \frac{ N^2 }{ n } (1 - f) S^2_{y_U} + \frac{ N^2 }{ n^2 } \, E_p \left[ E_m \left( \sum\limits_{h=1}^{H_s} \frac{ N_h^2 }{ m_h } (1 - f_h) S^2_{y_{s_h}} \Bigg| \, s \right) \right] = V_1 + V_2$$
+
+Nótese que el primer sumando corresponde a la varianza del estimador $\pi$ bajo un diseño simple. El segundo sumando corresponde al incremento de varianza generado por la no respuesta.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+Un estimador insesgado para la varianza viene dado por:
+
+$$ {\color{red} \star } \:\:\: \hat{V}( \hat{t}_{c \pi^*} ) = \hat{V}_1 + \hat{V}_2 $$
+
+$$ {\color{red} \star } \:\:\: \hat{V}_1 = \frac{ N^2 }{ n } (1 - f) \left[ \sum\limits_{h=1}^{H_s} \frac{ n_h }{ n } ( 1 - \delta_h ) S^2_{y_{r_h}} + \frac{ n }{ n - 1 } \sum\limits_{h=1}^{H_s} \frac{ n_h }{ n } \big( \bar{y}_{r_h} - \hat{\bar{y}}_U \big)^2 \right] $$
+$$\text{donde } \:\: \delta_h = \left( \frac{ 1 - \, ^{n_h} \! / _n }{ m_h } \right) \left( \frac{ n }{ n - 1} \right) $$
+
+$$ {\color{red} \star } \:\:\: \hat{V}_2 = N^2 \sum\limits_{h=1}^{H_s} \frac{ n_h }{ n } \left( \frac{ 1 - f_h }{ m_h } \right) S^2_{y_{r_h}} $$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% PESOS Y VARS. AUX %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Estimadores que usan pesos y variables auxiliares}
+
+\begin{frame}{Estimadores que usan pesos y variables auxiliares}
+
+\begin{itemize}
+\item La intuición detrás de estos es utilizar estimadores de regresión con el objetivo de asistir la estimación mediante el uso de la información auxiliar.
+
+\item El uso de esta información auxiliar genera estimadores resistentes al sesgo y ayuda a disminuir la varianza.
+
+\item Se utilizarán 2 tipos de predicciones:
+	\begin{itemize}
+	\item $\hat{y}_k = \bold{x}_k' \bold{\hat{B}_r}$
+	\item $\hat{y}_{1k} = \bold{x}_{1k}' \bold{\hat{B}_{1r}}$
+	\end{itemize}
+\end{itemize}
+donde:
+\begin{itemize}
+\item $x_k$ es un vector de información auxiliar a nivel de la muestra.
+\item $x_{1k}$ es un vector de información auxiliar a nivel poblacional.
+\end{itemize}
+
+\vspace{0.5cm}
+\textcolor{blue}{El uso de estos estimadores requiere conocer:}
+\begin{itemize}
+\item $\sum_{s_h} x_k \;\; \forall h$
+\item $\sum_U x_{1k}$
+\item $\sum_{s_h} x_{1k} \;\; \forall h$
+\item Los valores individuales $x_{1k} \, \forall k \in U$
+\item Los valores individuales $x_{k} \, \forall k \in r$
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Coeficientes estimados $\bold{\hat{B}}$}
+
+$$ {\color{red} \star} \;\;\; \bold{\hat{B}_r} = \left( \sum_{h=1}^{H_s} \sum\nolimits_{r_h} \frac{ \bold{x}_k \, \bold{x}'_k }{ \sigma_k^{2} \, \pi_k^*} \right)^{-1} \left( \sum_{h=1}^{H_s} \sum\nolimits_{r_h} \frac{ \bold{x}_k \, y_k }{ \sigma_k^2 \, \pi_k^*} \right) =$$
+$$= \left( \sum_{h=1}^{H_s} \, f_h^{-1} \, \sum\nolimits_{r_h} \frac{ \bold{x}_k \, \bold{x}_k' }{ \sigma_k^{2} \, \pi_k} \, \right)^{-1} \left( \sum_{h=1}^{H_s} \, f_h^{-1} \, \sum\nolimits_{r_h} \, \frac{ \bold{x}_k \, y_k }{ \sigma_k^2 \, \pi_k} \right)$$
+
+\vspace{1cm}
+
+$$ {\color{red} \star} \;\;\; \bold{\hat{B}_{1r}} = \left( \sum_{h=1}^{H_s} \sum\nolimits_{r_h} \frac{ \bold{x}_{1k} \, \bold{x}_{1k}' }{ \sigma_{1k}^{2} \, \pi_k^*} \right)^{-1} \left( \sum_{h=1}^{H_s} \sum\nolimits_{r_h} \frac{ \bold{x}_{1k} \, y_k }{ \sigma_{1k}^2 \, \pi_k^* } \right) = $$ 
+$$= \left( \sum_{h=1}^{H_s} \, f_h^{-1} \, \sum\nolimits_{r_h} \frac{ \bold{x}_{1k} \, \bold{x}_{1k}' }{ \sigma_{1k}^{2} \, \pi_k} \right)^{-1} \left( \sum_{h=1}^{H_s} \, f_h^{-1} \, \sum\nolimits_{r_h} \, \frac{ \bold{x}_{1k} \, y_k}{\sigma_{1k}^2 \pi_k} \right)$$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{El estimador de regresión}
+$$\hat{t}_{cr} = \sum\nolimits_U \hat{y}_{1k} + \sum_{h=1}^{H_s} \left( \sum\nolimits_{s_h} \frac{ \hat{y}_k - \hat{y}_{1k} }{ \pi_k } + \sum\nolimits_{r_h} \frac{ y_k - \hat{y}_k }{ \pi_k^* } \right) =$$
+$$= \sum\nolimits_U \hat{y}_{1k} + \sum_{h=1}^{H_s} \left( \sum\nolimits_{s_h} \frac{ \hat{y}_k - \hat{y}_{1k} }{ \pi_k } + f_h^{-1} \,\sum\nolimits_{r_h} \frac{ y_k - \hat{y}_k }{ \pi_k } \right)$$
+
+\vspace{0.5cm}
+\textcolor{blue}{2 casos particulares:}
+\begin{enumerate}
+\item Información auxiliar solamente a nivel de muestra:
+$$\hat{t}_{cr} = \sum_{h=1}^{H_s} \left( \sum\nolimits_{s_h} \frac{ \hat{y}_k }{ \pi_k } + f_h^{-1} \sum\nolimits_{r_h} \frac{ y_k - \hat{y_k} }{ \pi_k } \right)$$
+\item Información auxiliar solamente a nivel poblacional:
+$$\hat{t}_{cr} = \sum\nolimits_U \hat{y}_{1k} + \sum_{h=1}^{H_s} f_h^{-1} \sum\nolimits_{r_h} \frac{ y_k - \hat{y}_{1k} }{ \pi_k }$$
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Varianza y estimación de la varianza}
+
+\textcolor{blue}{Errores y residuos $\pi$-expandidos}
+
+\begin{itemize}
+\item $\check{E}_k = \frac{ E_k }{ \pi_k } = \frac{ y_k - \bold{x}_k' \, \bold{B_s} }{ \pi_k } \hspace{0.5cm} \text{con } \bold{B_s} = \left( \sum\nolimits_s \frac{ \bold{x}_k \, \bold{x}_k' }{ \sigma_k^2 \, \pi_k } \right)^{-1} \left( \sum\nolimits_s \frac{ \bold{x}_k \, y_k }{ \sigma_k^2 \, \pi_k} \right)$
+\item $\check{E}_{1k} = \frac{ E_{1k} }{ \pi_k } = \frac{ y_k - \bold{x}_{1k}' \, \bold{B_1} }{ \pi_k } \hspace{0.5cm} \text{con } \bold{B_1} = \left( \sum\nolimits_U \frac{ \bold{x}_{1k} \, \bold{x}_{1k}' }{ \sigma_{1k}^{2} } \right)^{-1} \left( \sum\nolimits_U \frac{ \bold{x}_{1k} \, y_k }{ \sigma_{1k}^2 } \right)$
+\item $\check{e}_{kr} = \frac{e_{kr}}{\pi_k} = \frac{y_k - \hat{y}_k}{\pi_k}$
+\item $\check{e}_{1kr} = \frac{e_{1kr}}{\pi_k} = \frac{y_k - \hat{y}_{1k}}{\pi_k}$
+
+\vspace{1cm}
+Si el modelo ajusta correctamente los datos $\Rightarrow$ el estimador de regresión presentado es aproximadamente insesgado para el total $t_y$.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Varianza Aproximada}
+
+$$AV( \hat{t}_{cr} ) = \sum\sum\nolimits_U \Delta_{kl} \, \check{E}_{1k} \, \check{E}_{1l} + E_p \left[ E_m \left( \sum_{h=1}^{H_s} \frac{ n_h^2 }{ m_h } ( 1 - f_h ) S^2_{\check{E}_{s_h}} \Bigg| \, s \right) \right]$$
+$$\text{donde } S^2_{\check{E}_{s_h}} \text{ es la varianza de }\check{E}_k \text{ en el set } s_h$$
+
+\vspace{.5cm}
+\textcolor{blue}{Un estimador de la varianza}
+$$ \hat{V} ( \hat{t}_{cr} ) = \sum\sum\nolimits_r \frac{ \check{\Delta}_{kl} }{ \pi_{kl | s;\bold{m}} } \, \check{e}_{1k_r} \, \check{e}_{1l_r} \, + \, \sum_{h=1}^{H_s} \frac{n_h^2}{m_h} \, (1-f_h) \, S^2_{\check{e}_{r_h}}$$
+$$\text{donde } S^2_{\check{e}_{r_h}} \text{ es la varianza de } \check{e}_{r_h} \text{ sobre } r_h$$
+
+Cada uno de los sumandos del estimador es insesgado para su contraparte en la varianza $\Rightarrow E[ \hat{V}( \hat{t}_{cr} ) ] = V ( \hat{t}_{cr} )$ .
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% EJEMPLO: ratio estimator with weighting class adjustment %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Ejemplo: ratio estimator with weighting class adjustment}
+
+\begin{frame}{Ejemplo: ratio estimator with weighting class adjustment}
+
+\begin{itemize}
+\item Se toma una muestra $s$ de tamaño $n$ bajo un diseño $SI$.
+\item $x_k$ valores positivos solamente conocidos en la muestra $s$ $\Rightarrow$ caso especial 1.
+\end{itemize}
+
+\vspace{.5cm}
+Supongamos que el scatter de los puntos $(x_k; \, y_k)$ queda bien descrito por el modelo:
+$$\left\{\begin{array}{r c l}
+E_{\xi}(y_k) & = & \bold{x}'_k \, \boldsymbol{\beta} \\
+V_{\xi}(y_k) & = & \sigma^2 \, \bold{x}_k
+\end{array} \right.$$
+
+\vspace{.5cm}
+\textcolor{blue}{Estimador de regresión con pesos ajustados}
+$$ \hat{t}_{cr} = \frac{ N }{ n } \left( \sum\nolimits_s x_k \right) \hat{B}_r = \frac{ N }{ n } \left( \sum\nolimits_s x_k \right) \frac{ \sum\limits_{h=1}^{H_s} n_h \, \bar{y}_{r_h} }{ \sum\limits_{h=1}^{H_s} n_h \, \bar{x}_{r_h} } $$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\textcolor{blue}{Su varianza aproximada}
+
+$$ AV(\hat{t}_{cr}) = \frac{ N^2 }{ n } \left( 1 - \frac{n}{N} \right) S^2_{y_U} + \frac{ N^2 }{ n^2 } E_p \left[ E_m \left( \sum\limits_{h=1}^{H_s} \frac{ n_h^2 }{ m_h } ( 1 - f_h ) S^2_{E_{s_h}} \Bigg| \, s \right) \right] = V_1 + AV_2$$
+donde:
+\begin{itemize}
+\item $S^2_{E_{s_h}}$ es la varianza de los residuos $E_K=y_k - \bold{x}_k \, \bold{B_s}$ en $s_h$
+\item $\bold{B_s} = \frac{ \sum\nolimits_s y_k }{ \sum\nolimits_s x_k }$
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\vspace{0.5cm}
+\textcolor{blue}{Un estimador insesgado para la varianza viene dado por:}
+
+$$ {\color{red} \star } \:\:\: \hat{V}( \hat{t}_{c \pi^*} ) = \hat{V}_1 + \hat{V}_2 $$
+
+$$ {\color{red} \star } \:\:\: \hat{V}_1 = \frac{ N^2 }{ n } (1 - f) \left[ \sum\limits_{h=1}^{H_s} \frac{ n_h }{ n } ( 1 - \delta_h ) S^2_{y_{r_h}} + \frac{ n }{ n - 1 } \sum\limits_{h=1}^{H_s} \frac{ n_h }{ n } \big( \bar{y}_{r_h} - \hat{\bar{y}}_U \big)^2 \right] $$
+$$\text{donde } \:\: \delta_h = \left( \frac{ 1 - \, ^{n_h} \! / _n }{ m_h } \right) \left( \frac{ n }{ n - 1} \right) $$
+
+$$ {\color{red} \star } \:\:\: \hat{V}_2 = \sum\limits_{h=1}^{H_s} \frac{ n_h }{ m_h } \left( 1 - f_h \right) S^2_{\check{e}_{r_h}}$$
+$$\text{donde } \:\: e_{k_r} = y_k - \bold{x}_k \, \bold{\hat{B}_r}$$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% EJEMPLO: postestratificación (caso 1) %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{EJEMPLO: post-estratificación (caso 1)}
+
+\begin{frame}{Ejemplo: post-estratificación (caso 1)}
+
+\begin{itemize}
+\item Se toma una muestra s bajo un diseño SI de tamaño n, y luego se post-estratifica.
+\item Modelo de la media común por grupos (o estratos) para los datos:
+$$ \left\{\begin{array}{r c l}
+E_{\xi}(y_k) = \beta_h & \;\;\; & \forall k \in s_h \\
+V_{\xi}(y_k) = \sigma^2_h & \:\:\: & \forall k \in s_h
+\end{array}\right. $$
+\item El vector $x_{1k}$ indica a qué grupo pertenece el elemento $k$.
+\item Se asume que el vector $\sum\nolimits_U \bold{x}_{1k} = (N_1; \ldots; \, N_h; \ldots; \, N_H)$ es conocido.
+\item Se asume un modelo RHG para la respuesta.
+\item Los estratos formados son equivalentes a los grupos de respuesta homogénea (RGH).
+\end{itemize}
+
+\vspace{0.3cm}
+\textcolor{blue}{Estimador poset-stratificado}
+$$\hat{t}_{cr} = \sum\limits_{h=1}^{H_s} N_h \, \bar{y}_{rh}$$ 
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% EJEMPLO: post-estratificación %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{EJEMPLO: post-estratificación (caso 2)}
+
+\begin{frame}{Ejemplo: post-estratificación (caso 2)}
+
+\textcolor{blue}{Modelo para los datos}
+
+\vspace{0.5cm}
+\begin{itemize}
+\item Los elementos de la muestra $s$ se clasifican en $G_s$ grupos (estratos): $(s_1; \ldots; \, s_h; \ldots; \, s_{G_s})$ de tamaño $n_g$ de forma tal que los valores de $y_k$ dentro de cada grupo tengan una variación modesta alrededor de la media grupal.
+
+\vspace{0.5cm}
+\item Conocemos los totales por estrato solo a nivel de muestra.
+
+\vspace{0.5cm}
+\item Modelo para los datos: one-way ANOVA
+$$\left\{\begin{array}{l r}
+E_{\xi}(y_k) = \beta_g & \forall k \in g \\
+V_{\xi}(y_k) = \sigma^2 & \forall k \in g
+\end{array}\right.$$
+
+\vspace{0.2cm}
+\item La muestra es obtenida mediante un diseño SI.
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\textcolor{blue}{Modelo para la no respuesta}
+
+\vspace{0.5cm}
+\begin{itemize}
+\item Se asume un modelo RHG para la no respuesta con $H_s$ categorías.
+
+\vspace{0.5cm}
+\item La clasificación cruzada entre estratos y grupos genera $G_s \times H_s$ categorías de clasificación, $s_{gh}$, de tamaño $n_{gh}$.
+
+\vspace{0.5cm}
+\item $r_{gh}$ es el set de respuesta del grupo $s_{gh}$ de tamaño $m_{gh}$.
+
+\vspace{0.5cm}
+\item La tasa de respuesta en el grupo $h$ es $f_h = \frac{m_{\cdot h}}{n_{\cdot h}}$ donde:
+
+	\begin{itemize}
+	\item $n_{\cdot h} = \sum\limits_{g=1}^{G_s} n_{gh}$
+	\item $m_{\cdot h} = \sum\limits_{g=1}^{G_s} m_{gh}$
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\textcolor{blue}{Estimador del total:} $\hat{t}_{cr} = \frac{N}{n} \sum\limits_{g=1}^{G_s} n_{g \cdot} \hat{B}_{gr}$
+
+\vspace{0.2cm}
+donde:
+\begin{itemize}
+\item $n_{g \cdot} = \sum\limits_{h=1}^{H_s} n_{gh}$
+\item $\hat{B}_{gr} = \left( \sum\limits_{h=1}^{H_s} f^{-1}_h m_{gh} \right)^{-1} \left( \sum\limits_{h=1}^{H_s} f^{-1}_h \sum\nolimits_{r_{gh}} y_k \right)$
+\end{itemize}
+
+El mismo puede interpretarse como la suma de los totales por estrato $\hat{N}_g \times \hat{B}_{g_r}$ donde:
+\begin{itemize}
+\item $\hat{B}_{g_r}$ es el ajuste por la no respuesta estimada para la media del estrato $g$.
+\item $\hat{N}_g = \, ^{N \, n_{g \cdot}} \! / _{n} $ es el conteo estimado para el estrato $g$.
+\end{itemize}
+
+\vspace{0.5cm}
+\textcolor{blue}{Estimador de la varianza del total:} $\hat{V} ( \hat{t}_{cr} ) = \hat{V}_1 + \hat{V}_2 $
+
+\vspace{0.2cm}
+donde $\hat{V}_1$ y $\hat{V}_2$ son los mismos que en caso anterior con residuos $e_{k_r} = y_k - \hat{B}_{g_r}$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%
+%%%% IMPUTACIÓN %%%%
+%%%%%%%%%%%%%%%%%%%%
+
+\section{Imputación}
+
+\begin{frame}{Imputación}
+
+Supongamos que tenemos un estudio con $q$ variables de análisis: $\bold{y}_k = (y_{1k}; \ldots; \, y_{jk}; \ldots; \, y_{qk} )' $ donde:
+
+\vspace{0.2cm}
+\begin{itemize}
+\item $r_j$ es el set de respuesta para la variable $j$.
+
+\vspace{0.2cm}
+\item $r_u = r_1 \cup r_2 \cup \ldots \cup r_q$ es el set de los elementos que responden una o más preguntas.
+
+\vspace{0.2cm}
+\item $r_c = r_1 \cap r_2 \cap \ldots \cap r_q$ es el set de los elementos que responden todas las preguntas.
+
+\vspace{0.2cm}
+\item item non-response set: $r_u - r_c$ (se asume no vacío).
+
+\vspace{0.2cm}
+\item unit non-response set: $s - r_u$ (se asume no vacío).
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+Dos opciones en cuanto a cómo utilizar la información observada y la información auxiliar:
+
+\vspace{0.2cm}
+\begin{enumerate}
+\item \textbf{Response set approach}: la información asociada con el set de respuesta de la variable $j$ es usada para crear estimaciones para la variable $j$.
+
+\vspace{0.2cm}
+\item \textbf{Clean data matrix approach}: se crea una matriz completa, la cual es utilizada para calcular estimaciones para los valores faltantes.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% RESPONSE SET APPROACH %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Response set approach}
+
+\begin{frame}{Response set approach}
+
+\vspace{0.2cm}
+\begin{itemize}
+\item Puede utilizarse el enfoque de ajustes ponderados visto anteriormente variable-a-variable.
+
+\vspace{0.2cm}
+\item Se define un set de RHGs.
+
+\vspace{0.2cm}
+\item $\check{y}_{jk}$ recibe el ajuste $^{n_h} / _{m_{jh}}$ si $k \in h$, donde $^{n_h} / _{m_{jh}}$ es la tasa de respuesta en el grupo $h$ para el item $j$.
+
+\vspace{0.2cm}
+\item Los RHGs pueden diferir entre items del cuestionario.
+
+\vspace{0.2cm}
+\item Pueden generar estimaciones no permitidas (por ejemplo: valores negativos para variables que el investigador sabe son siempre positivas).
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% CLEAN DATA MATRIX APPROACH %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Clean data matrix approach}
+
+\begin{frame}{Clean data matrix approach}
+
+\begin{itemize}
+\item Forma inocente: utilizar únicamente los datos observados $y_k$ para $k \in r_c$
+	\begin{itemize}
+	\item La información para las observaciones en el set $r_u - r_c$ es descartada.
+	\item El método solo funciona si el tamaño del set descartado es muy reducido.
+	\item Se utilizan métodos de imputación para crear la matriz de datos completos.
+	\item Los valores imputados los anotamos como: $\tilde{y}_{jk}$, los cuales son generados mediante el uso de información auxiliar.
+	\item Esto conlleva a una matriz completa de datos de dimensiones $n_{r_u} \times q$.
+	\end{itemize}
+
+\vspace{0.2cm}
+\item Imputaciones para la no respuesta de unidades y la no respuesta de items:
+	\begin{itemize}
+	\item Se producen estimaciones $\tilde{y}_{jk}$ para todo el set $s - r_c$.
+	\item El resultado es una matriz de datos de dimensiones $n_s \times q$.
+	\end{itemize}
+
+\vspace{0.2cm}
+\item La imputación siempre produce sesgos y varianzas adicionales en las estimaciones.
+
+\vspace{0.2cm}
+\item Conocemos como \textcolor{magenta}{\textit{imputación deductiva}} a las instancias en las que un valor faltante puede ser imputado de forma perfecta ($\tilde{y}_{jk} = y_{jk}$) producto de una conclusión lógica.
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% MÉTODOS DE PREDICCIÓN IMPERFECTA %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Métodos de predicción imperfecta}
+
+\begin{frame}{Métodos de predicción imperfecta}
+
+\begin{block}{Overall mean imputation}
+\begin{itemize}
+\item Para cada item $j$, se asigna el mismo valor $\bar{y}_{r_j}$ a todos los valores faltantes $y_{jk}$ en el set $r_u - r_j$.
+\item Puede producir estimaciones de varianza pobres.
+\end{itemize}
+\end{block}
+
+\begin{block}{Class mean imputation}
+\begin{itemize}
+\item El set de respuesta es particionado en clases según un algoritmo de clasificación para el cual se utiliza la información auxiliar.
+\item Los valores faltantes son imputados con la media de la clase a la que pertenece el elemento.
+\end{itemize}
+\end{block}
+
+\begin{block}{Hot-Deck and Cold-Deck imputation}
+\begin{itemize}
+\item \textbf{Hot-Deck}: los valores faltantes son remplazados por valores seleccionados de entre las observaciones de la encuesta.
+\item \textbf{Cold-Deck}: utiliza valores de otras fuentes.
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\begin{block}{Random overall imputation}
+\begin{itemize}
+\item Para cada valor faltante se sortea un valor en el set de respuesta $r_j$.
+\item Este se conoce como donante.
+\end{itemize}
+\end{block}
+
+\begin{block}{Random imputation with classes}
+\begin{itemize}
+\item Ídem que el anterior, pero los donantes son sorteados dentro de la misma clase a la que pertenece la unidad a ser imputada.
+\end{itemize}
+\end{block}
+
+\begin{block}{Sequential Hot-Deck}
+\begin{itemize}
+\item Los donantes son seleccionados mediante ``backtracking'' dentro de la clase de la unidad a imputar.
+\item Se elige el donante ``más cercano'' según un criterio establecido.
+\item El procedimiento siempre comienza con un valor ``cold-deck'' para cada clase.
+\item Un problema de este método es que algunos donantes puede terminar siendo usados varias veces.
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\begin{block}{Distance function matching}
+\begin{itemize}
+\item Para cada valor faltante y para cada item, $y_{jk}$ es remplazado por el valor contestado por un elemento presente en la encuesta para dicho item.
+\item El donante es elegido mediante cercanía según alguna función de distancia, definida sobre las variables auxiliares.
+\end{itemize}
+\end{block}
+
+\begin{block}{Regression imputation}
+\begin{itemize}
+\item Utiliza la información de los respondentes para ajustar una regresión para la variable que se desea imputar.
+\item Para dicha regresión se utilizan variables que se asume tienen alto poder predictivo para $y_j$.
+\end{itemize}
+\end{block}
+
+\begin{block}{Multiple imputation}
+\begin{itemize}
+\item Para cada valor faltante se realizan $m$ imputaciones.
+\item Se forman $m$ data sets completos a ser analizados.
+\item Se utilizan pooled-variance para construir intervalos de confianza.
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+\end{document}
