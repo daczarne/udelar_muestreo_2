@@ -1,0 +1,217 @@
+---
+title: "Untitled"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \usepackage{cancel}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ejercicio 11.2
+
+Verificar la siguiente igualdad:
+
+$$\text{E}(\hat{\text{V}}_1) = \text{V}(\hat{\theta}^{*}) - \frac{1}{A(A-1)} \sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b) +\frac{1}{A(A-1)} \sum_{a=1}^{A} \big[ \text{E}(\hat{\theta}_a) - \text{E}(\hat{\theta}^{*})\big]^{2} $$
+
+*Demostración*:
+
+Por un lado:
+$$\text{E}(\hat{\text{V}}_1) = \text{E} \bigg(\frac{1}{A(A-1)} \sum_{a=1}^{A} (\hat{\theta}_a - \hat{\theta}^{*})^{2} \bigg) =$$ 
+$$ = \frac{1}{A(A-1)} \big[ \sum_{a=1}^{A} \text{E}(\hat{\theta}_{a}^{2}) - A \text{E}(\hat{\theta}^{*2}) \big] = \frac{1}{A(A-1)} \sum_{a=1}^{A} \text{E}(\hat{\theta}_a^{2}) - \frac{A}{A(A-1)} \text{E}(\hat{\theta}^{*2})$$
+
+Por otro lado:
+
+$$\text{V}(\hat{\theta}^{*}) - \frac{1}{A(A-1)} \sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b) +\frac{1}{A(A-1)} \sum_{a=1}^{A} \big[ \text{E}(\hat{\theta}_a) - \text{E}(\hat{\theta}^{*})\big]^{2} = $$ 
+$$= \frac{A(A-1)}{A(A-1)}\text{V}(\hat{\theta}^{*}) - \frac{1}{A(A-1)} \sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b) + \frac{1}{A(A-1)} \big[ \sum_{a=1}^{A} \text{E}(\hat{\theta}_a)^{2} - A\text{E}(\hat{\theta}^{*})^{2}\big]$$
+
+Por lo tanto, tenemos que mostrar que se cumple la igualdad:
+
+$$ \frac{1}{A(A-1)} \sum_{a=1}^{A} \text{E}(\hat{\theta}_a^{2}) - \frac{A}{A(A-1)} \text{E}(\hat{\theta}^{*2}) = $$ 
+$$ = \frac{A(A-1)}{A(A-1)}\text{V}(\hat{\theta}^{*}) - \frac{1}{A(A-1)} \sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b) + \frac{1}{A(A-1)} \big[ \sum_{a=1}^{A} \text{E}(\hat{\theta}_a)^{2} - A\text{E}(\hat{\theta}^{*})^{2}\big]$$
+
+Eliminamos el denominador $A(A-1)$
+
+$$\sum_{a=1}^{A} \text{E}(\hat{\theta}_a^{2}) - A \text{E}(\hat{\theta}^{*2}) =  A(A-1)\text{V}(\hat{\theta}^{*}) - \sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b) + \sum_{a=1}^{A} \text{E}(\hat{\theta}_a)^{2} - A\text{E}(\hat{\theta}^{*})^{2}$$
+
+$$ \sum_{a=1}^{A} \text{E}(\hat{\theta}_a^{2})  =  A(A-1)\text{V}(\hat{\theta}^{*}) - \sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b) + \sum_{a=1}^{A} \text{E}(\hat{\theta}_a)^{2} + A \underbrace{\big[ \text{E}(\hat{\theta}^{*2})- \text{E}(\hat{\theta}^{*})^{2} \big]}_{\text{V}(\hat{\theta}^{*})}$$
+
+$$ \sum_{a=1}^{A} \text{E}(\hat{\theta}_a^{2}) - \sum_{a=1}^{A} \text{E}(\hat{\theta}_a)^{2} = A(A-1)\text{V}(\hat{\theta}^{*}) - \sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b) + A\text{V}(\hat{\theta}^{*})$$
+
+$$ \sum_{a=1}^{A} \big[\text{E}(\hat{\theta}_a^{2}) - \text{E}(\hat{\theta}_a)^{2} \big] = A^{2}\text{V}(\hat{\theta}^{*}) - \sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b) $$
+
+Dado que: 
+
+${\color{red}\star} \, \, \sum_{a=1}^{A}\big[\text{E}(\hat{\theta}_a^{2}) - \text{E}(\hat{\theta}_a)^{2} \big] = \sum_{a=1}^{A} \text{V}(\hat{\theta}_a) = \text{V}\bigg(\sum_{a=1}^{A} \hat{\theta}_a \bigg) - \sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b)$
+
+Llegamos a que:
+
+$$\underbrace{\text{V}\bigg(\sum_{a=1}^{A} \hat{\theta}_a \bigg)}_{A^{2} V(\hat{\theta}^{*})} - \cancel{\sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b)} = A^{2}\text{V}(\hat{\theta}^{*}) - \cancel{\sum \sum_{a \neq b}^{A} \text{C}(\hat{\theta}_a, \hat{\theta}_b)} $$
+
+Con lo cual, queda demostrada la igualdad.
+
+# Ejercicio 11.4
+
+Verificar que bajo un diseño arbitrario de tamaño fijo se cumple que:
+$$\text{E}(\hat{V}_0) - V = \frac{n}{n-1}(V_0 - V), \hspace{.5cm} \text{en donde} \, \, \hat{V}_0 = \frac{1}{n(n-1)} \sum_s \bigg( \frac{y_k}{p_k} - \hat{t}_{\pi} \bigg)^{2} $$
+
+*Demostración*:
+$$\text{E}(\hat{V}_0) =\frac{1}{n(n-1)} \text{E}_{p(s)} \bigg[\sum_s \bigg( \frac{y_k}{p_k} - \hat{t}_{\pi} \bigg)^{2} \bigg] = \frac{1}{n(n-1)} \text{E}_{p(s)} \bigg[\sum_s n^{2}\bigg( \frac{y_k}{\pi_k} - \hat{t}_{\pi} \bigg)^{2} \bigg]  = $$ 
+
+$$ = \frac{n}{(n-1)} \text{E}_{p(s)} \bigg[\sum_s \bigg( \frac{y_k}{\pi_k} - \hat{t}_{\pi} \bigg)^{2} \bigg] = \frac{n}{(n-1)} \text{E}_{p(s)} \bigg[\sum_s \bigg( \frac{y_k^{2}}{\pi_k^{2}} - 2\frac{y_k}{\pi_k}\frac{\hat{t}_{\pi}}{n} + \frac{\hat{t}_{\pi}^{2}}{n^{2}} \bigg) \bigg] =$$
+
+$$ = \frac{n}{(n-1)} \text{E}_{p(s)} \bigg[\sum_s \frac{y_k^{2}}{\pi_k^{2}} \, - \,  2\frac{\hat{t}_{\pi}^{2}}{n} \, + \, \cancel{n}\frac{\hat{t}_{\pi}^{2}}{n^{\cancel{2}}}  \bigg] = \frac{n}{(n-1)} \text{E}_{p(s)} \bigg[\sum_s \frac{y_k^{2}}{\pi_k^{2}} \, - \, \frac{\hat{t}_{\pi}^{2}}{n}  \bigg] =  $$
+
+$$ = \frac{n}{(n-1)} \bigg[ \text{E}_{p(s)} \bigg(\sum_s \frac{y_k^{2}}{\pi_k^{2}} \bigg) - \text{E}_{p(s)} \bigg(\frac{\hat{t}_{\pi}^{2}}{n} \bigg) \bigg] = \frac{n}{(n-1)} \bigg[ \text{E}_{p(s)} \bigg(\sum_s \frac{y_k^{2}}{\pi_k^{2}} \bigg) - \frac{1}{n} \bigg( \text{V}(\hat{t}_{\pi}) + \underbrace{\text{E} (\hat{t}_{\pi})^{2} )}_{t^{2}} \bigg) \bigg] = $$
+
+Por otro lado, tenemos que:
+
+$${\color{red}\star} \, \, V_0 = \frac{1}{n} \sum_U p_k \bigg( \frac{y_k}{p_k} - t \bigg)^{2} = \frac{1}{n} \sum_U  \frac{y_k^{2}}{p_k} - t^{2}$$
+
+\newpage
+
+Por lo tanto:
+
+$$\text{E}(\hat{V}_0) - V = \frac{n}{(n-1)} \bigg[ \text{E}_{p(s)} \bigg(\sum_s \frac{y_k^{2}}{\pi_k^{2}} \bigg) - \frac{1}{n} \bigg( \text{V}(\hat{t}_{\pi}) + t^{2} \bigg) \bigg] - \frac{n(n-1)}{n(n-1)} V = $$
+
+$$ = \frac{n}{(n-1)} \bigg[ \text{E}_{p(s)} \bigg(\sum_s \frac{y_k^{2}}{\pi_k^{2}} \bigg) - \cancel{\frac{1}{n} \text{V}(\hat{t}_{\pi})} - \frac{t^{2}}{n}  - \frac{n-\cancel{1}}{n} V \bigg] = $$
+
+$$ = \frac{n}{(n-1)} \bigg[ \sum_U \frac{y_k^{2}}{\pi_k}  -  \frac{t^{2}}{n}  -  V \bigg] = \frac{n}{(n-1)} \bigg[ \frac{1}{n} \bigg(\sum_U \frac{y_k^{2}}{p_k}  -  t^{2} \bigg)  -  V \bigg] = \frac{n}{n-1} \bigg[ V_0  - V \bigg] $$
+
+$$ \Rightarrow \color{blue}\boxed{\text{E}(\hat{V}_0) - V = \frac{n}{n-1}(V_0 - V)} $$
+
+# Ejercicio 11.6
+
+Mostrar que para el caso de grupos aleatorios dependientes, bajo un diseño SI como el descrito en el ejemplo 11.3.3, la covarianza entre las medias de dos grupos es:
+
+$$C(\bar{y}_{s_a}, \bar{y}_{s_b}) = \text{V}(\bar{y}_s)- \frac{S_{y_U}^{2}}{n} = - \frac{S_{y_U}^{2}}{N} $$
+
+$$\text{V}(\bar{y}_s)- \frac{S_{y_U}^{2}}{n} = \frac{N^{2}}{N^{2} n}(1-f)S_{y_U}^{2} - \frac{S_{y_U}^{2}}{n} = \cancel{\frac{S_{y_U}^{2}}{n}} - \frac{n}{N}\frac{S_{y_U}^{2}}{n} - \cancel{\frac{S_{y_U}^{2}}{n}} = - \frac{S_{y_U}^{2}}{N} $$
+
+# Ejercicio 11.10
+
+Verificar que si el set de medias muestras es balanceado entonces:
+$$ \hat{V}_{BH} = \hat{V}_0$$
+
+*Demostración*:
+
+Tenemos que demostrar entonces que:
+
+$$ \frac{1}{A} \sum_{a=1}^{A} (\hat{t}_a - \hat{t}_{\pi})^{2} = \frac{1}{n(n-1)} \sum_s \bigg( \frac{y_k}{p_k} - \hat{t}_{\pi}\bigg)^{2}$$
+
+Por un lado, tenemos que:
+
+$$ \hat{V}_{BH} = \frac{1}{A} \sum_{a=1}^{A} (\hat{t}_a - \hat{t}_{\pi})^{2} =  \frac{1}{A} \sum_{a=1}^{A} (\sum_{h=1}^{H} \bigg( 2 \delta_{ah} \frac{y_{h1}}{\pi_{h1}} + 2(1-\delta_{ah})\frac{y_{h2}}{\pi_{h2}} - \sum_{s_h} \frac{y_k}{\pi_k}  \bigg) $$
+
+Observamos que en cada $s_h$ hay solamente 2 elementos:
+
+$$ \frac{1}{A} \sum_{a=1}^{A} (\sum_{h=1}^{H} \bigg( 2 \delta_{ah} \frac{y_{h1}}{\pi_{h1}} + 2(1-\delta_{ah})\frac{y_{h2}}{\pi_{h2}} - \frac{y_{h1}}{\pi_{h1}} - \frac{y_{h2}}{\pi_{h2}}  \bigg) =$$
+
+$$ = \frac{1}{A} \sum_{a=1}^{A} (\sum_{h=1}^{H} \bigg( (2 \delta_{ah} -1) \frac{y_{h1}}{\pi_{h1}} + (1-2\delta_{ah})\frac{y_{h2}}{\pi_{h2}} \bigg)=$$
+
+$$ = \frac{1}{A} \sum_{a=1}^{A} \sum_{h=1}^{H} (2 \delta_{ah} -1)^{2}\bigg( \frac{y_{h1}}{\pi_{h1}} - \frac{y_{h2}}{\pi_{h2}}\bigg)^{2} = $$
+
+Desarrollando el primer cuadrado y teniendo en cuenta que los $\delta_{ah}$ valen 0 ó 1:
+
+$$ = \frac{1}{A} \sum_{a=1}^{A} \sum_{h=1}^{H} (\frac{A}{2} - \frac{A}{2} + A)\bigg( \frac{y_{h1}}{\pi_{h1}} - \frac{y_{h2}}{\pi_{h2}}\bigg)^{2} = \sum_{a=1}^{A} \sum_{h=1}^{H} \bigg( \frac{y_{h1}}{\pi_{h1}} - \frac{y_{h2}}{\pi_{h2}}\bigg)^{2}$$
+
+$$ = \sum_{a=1}^{A} \sum_{h=1}^{H} \bigg( \frac{y_{h1}}{\pi_{h1}} - \hat{t}_{\pi h} + \frac{y_{h1}}{\pi_{h1}}\bigg)^{2} = \sum_{a=1}^{A} \sum_{h=1}^{H} \bigg( 2 \frac{y_{h1}}{\pi_{h1}} - \hat{t}_{\pi h}\bigg)^{2} $$
+
+Y operando y utilizando que : $\sum (w-z)^{2} = \frac{1}{2} \sum (w-z)^{2} + (z-w)^{2}$
+
+$$= \frac{1}{2} \sum_{h=1}^{H} \underbrace{\bigg( \frac{y_{h1}}{\pi_{h1}} - \frac{y_{h2}}{\pi_{h2}}\bigg)^{2}}_{\bigg( 2 \frac{y_{h1}}{\pi_{h1}} - \hat{t}_{\pi h}\bigg)^{2}} + \underbrace{\bigg( \frac{y_{h2}}{\pi_{h2}} - \frac{y_{h1}}{\pi_{h1}}\bigg)^{2}}_{\bigg( 2 \frac{y_{h2}}{\pi_{h2}} - \hat{t}_{\pi h}\bigg)^{2}} = \frac{1}{2} \sum_{h=1}^{H}\sum_{s_h} \bigg( \frac{y_k}{p_k} - \hat{t_{\pi h}}\bigg)^{2} = \hat{V}_{0} $$
+
+$$ \Rightarrow \color{blue}\boxed{\hat{V}_{BH } = \hat{V}_0}$$
+
+# Ejercicio 11.11
+
+Verificar que si el set de muestras es full-ortogonal balance:
+
+$$\hat{t}_{BH} = \hat{t}_{\pi}$$
+
+$$ \hat{t}_{BH} = \frac{1}{A} \sum_{a=1}^{A} \hat{t}_a = \frac{1}{A} \sum_{a=1}^{A} \sum_{h=1}^{H} \bigg[ \delta_{ah} \frac{y_{h1}}{p_{h1}} + (1- \delta_{ah})\frac{y_{h2}}{p_{h2}} \bigg] =  \frac{1}{A} \sum_{h=1}^{H} \sum_{a=1}^{A} \delta_{ah} \frac{y_{h1}}{p_{h1}} + \frac{1}{A} \sum_{h=1}^{H} \sum_{a=1}^{A} (1- \delta_{ah})\frac{y_{h2}}{p_{h2}} = $$
+
+$$ \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h1}}{p_{h1}} \sum_{a=1}^{A} \delta_{ah} + \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h2}}{p_{h2}} \sum_{a=1}^{A} (1- \delta_{ah}) = \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h1}}{p_{h1}} \sum_{a=1}^{A} \frac{1 + \varepsilon_{ah}}{2} + \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h2}}{p_{h2}} \sum_{a=1}^{A} \frac{1-\varepsilon_{ah}}{2} = $$
+
+$$ \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h1}}{p_{h1}} \sum_{a=1}^{A} \frac{1 + \varepsilon_{ah}}{2} + \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h2}}{p_{h2}} \sum_{a=1}^{A} \frac{1-\varepsilon_{ah}}{2} = $$
+
+$$ \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h1}}{p_{h1}}\sum_{a=1}^{A} \frac{1}{2} + \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h1}}{2 p_{h1}} \underbrace{\sum_{a=1}^{A}\varepsilon_{ah}}_{=0} + \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h2}}{p_{h2}} \sum_{a=1}^{A} \frac{1}{2} - \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h2}}{2 p_{h2}} \underbrace{\sum_{a=1}^{A}\varepsilon_{ah}}_{=0} = $$
+
+$$  \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h1}}{p_{h1}}\frac{A}{2} + \frac{1}{A} \sum_{h=1}^{H} \frac{y_{h2}}{p_{h2}}\frac{A}{2} = \frac{2}{2} \sum_{h=1}^{H} \frac{y_{h1}}{\pi_{h1}} + \frac{2}{2} \sum_{h=1}^{H} \frac{y_{h2}}{\pi_{h2}} = \sum_{h=1}^{H} \frac{y_{h1}}{\pi_{h1}} + \sum_{h=1}^{H}\frac{y_{h2}}{\pi_{h2}} = \sum_{h=1}^{H}\sum_{s_h} \check{y}_k = \hat{t}_{\pi} $$
+
+$$ \color{blue}\boxed{\hat{t}_{BH} = \frac{1}{A} \sum_{a=1}^{A} \hat{t}_a = \hat{t}_{\pi} }$$ 
+
+# Ejercicio 11.17
+
+Probar que bajo los supuestos del ejemplo 11.5.1 se cumple que:
+
+## Parte a
+
+$$ \text{E}[\hat{\theta}_{(a)} | S] = \sum_s \frac{y_k}{\pi_k} \, \, \text{y que por lo tanto} \, \, \text{E}[\hat{\theta}_{(a)}] = t$$  
+
+$$ \text{E}[\hat{\theta}_{(a)} | S] = \text{E} \bigg( \frac{A}{A-1} \sum_{S-S_a} \frac{y_k}{\pi_k} \, | \, S\bigg) = \frac{A}{A-1} \text{E} \bigg( \sum_{S} \frac{y_k}{\pi_k} \, | \, S\bigg) \, - \,  \frac{A}{A-1} \text{E} \bigg( \sum_{S_a} \frac{y_k}{\pi_k} \, | \, S\bigg) = $$
+
+$$ = \frac{A}{A-1} \sum_{S} \frac{y_k}{\pi_k} \, - \,  \frac{1}{A-1} \text{E} \bigg( \sum_{S_a} \frac{y_k}{\frac{\pi_k}{A}} \, | \, S\bigg) = \frac{A}{A-1} \sum_{S} \frac{y_k}{\pi_k} \, - \, \frac{1}{A-1} \sum_{S} \frac{y_k}{\pi_k} = \frac{A-1}{A-1} \sum_S \frac{y_k}{\pi_k} = \hat{t}_{\pi}$$
+
+$$ \Rightarrow \color{blue}\boxed{\text{E}[\hat{\theta}_{(a)} | S] = \hat{t}_{\pi}}$$
+
+Por otra parte:
+
+$$ \text{E}[\hat{\theta}_{(a)}] = \text{E} \bigg( \frac{A}{A-1} \sum_{S-S_a} \frac{y_k}{\pi_k} \bigg) = \frac{A}{A-1} \text{E} \bigg( \sum_{S} \frac{y_k}{\pi_k} \bigg) \, - \,  \frac{A}{A-1} \text{E} \bigg( \sum_{S_a} \frac{y_k}{\pi_k} \bigg) =$$
+
+$$ = \frac{A}{A-1} \text{E} \bigg( \sum_{S} \frac{y_k}{\pi_k} \bigg) \, - \,  \frac{1}{A-1} \text{E} \bigg( A \sum_{S_a} \frac{y_k}{\pi_k} \bigg) $$
+
+$\pi$- expandiendo tenemos que:
+
+$$ = \frac{A}{A-1} \sum_{U} y_k  \, - \,  \frac{1}{A-1}  \sum_{U} \text{E}(I_k) \frac{y_k}{\pi_k} = \frac{A-1}{A-1} \sum_U y_k = \sum_U y_k = t$$
+
+$$ \Rightarrow \color{blue}\boxed{\text{E}[\hat{\theta}_{(a)}] = t }$$
+
+## Parte b
+
+Demostrar que $\hat{\theta}_a = A \sum_{S_a} \frac{y_k}{\pi_k}$
+
+Del ejemplo, tenemos que:
+
+$${\color{red}\star} \, \, \hat{\theta} = \sum_S \frac{y_k}{\pi_k} \hspace{1cm} {\color{red}\star} \, \, \hat{\theta}_{(a)} = \frac{A}{A-1}\sum_{S-S_a} \frac{y_k}{\pi_k}$$
+
+Entonces:
+
+$$ \hat{\theta}_a = A\hat{\theta} - (A-1)\hat{\theta}_{(a)} = A\sum_S \frac{y_k}{\pi_k} - (A-1) \frac{A}{A-1}\sum_{S-S_a} \frac{y_k}{\pi_k}$$
+
+$$ \cancel{A\sum_S \frac{y_k}{\pi_k}} - \cancel{A\sum_{S} \frac{y_k}{\pi_k}} + A\sum_{S_a} \frac{y_k}{\pi_k} = A\sum_{S_a} \frac{y_k}{\pi_k} $$
+
+$$ \Rightarrow \color{blue}\boxed{\hat{\theta}_a = A \sum_{S_a} \frac{y_k}{\pi_k}}$$
+
+## Parte c
+
+Probar que $\hat{\theta}_{JK} = \sum_S \frac{y_k}{\pi_k}$
+
+$$ \hat{\theta}_{JK} = \frac{1}{A} \sum_{a=1}^{A} A \sum_{S_a} \frac{y_k}{\pi_k} = \sum_{a=1}^{A} \sum_{S_a} \frac{y_k}{\pi_k} = \sum_S \frac{y_k}{\pi_K} = \hat{t}_{\pi}$$
+
+$$ \Rightarrow \color{blue}\boxed{\hat{\theta}_{JK} = \hat{t}_{\pi}}$$
+
+## Parte d
+
+Si $A=n$, es decir $m=1$, demostrar que entonces $\hat{V}_{JK} = \hat{V}_0$
+
+$$ \hat{V}_{JK}= \frac{1}{A(A-1)} \sum_{a=1}^{A} (\hat{\theta}_a - \hat{\theta}_{JK} )^{2} = \frac{1}{A(A-1)} \sum_{a=1}^{A} (A \sum_{S_a} \frac{y_k}{\pi_k} - \hat{t}_{\pi} )^{2} = $$
+
+Usando que $A=n$
+
+$$ = \frac{1}{n(n-1)} \sum_{a=1}^{n} (n \sum_{S_a} \frac{y_k}{\pi_k} - \hat{t}_{\pi} )^{2} = \frac{1}{n(n-1)} \sum_{a=1}^{n} ( \sum_{S_a} \frac{y_k}{\frac{\pi_k}{n}} - \hat{t}_{\pi} )^{2} = \frac{1}{n(n-1)} \sum_{a=1}^{n} ( \sum_{S_a} \frac{y_k}{p_k} - \hat{t}_{\pi} )^{2} = $$
+
+Y dado que $m=1$ la suma en $S_a$ implica sumar un solo término, con lo cual:
+
+$$= \frac{1}{n(n-1)} \sum_{a=1}^{n} ( \frac{y_k}{p_k} - \hat{t}_{\pi} )^{2} = \frac{1}{n(n-1)} \sum_S ( \frac{y_k}{p_k} - \hat{t}_{\pi} )^{2} = \hat{V}_0 \Rightarrow \color{blue}\boxed{ \hat{V}_{JK} = \hat{V}_0}$$
