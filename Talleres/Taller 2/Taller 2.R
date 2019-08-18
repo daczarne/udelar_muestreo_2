@@ -14,10 +14,11 @@ library(foreign)
 library(survey)
 library(dplyr)
 library(xlsx)
+load(file = "Talleres/Taller 2/taller2.rdata")
 
 #### RATIO ####
 
-personas <- read.spss("P_2016_terceros.sav", to.data.frame=T, use.value.labels=F)
+# personas <- read.spss("Talleres/Taller 2/P_2016_terceros.sav", to.data.frame=T, use.value.labels=F)
 personas <- personas[, c(1:5,8,9,156:162,403,418:ncol(personas))]
 
 # Para crear el segmento se debe concatenar dpto, secc, segm
@@ -50,8 +51,8 @@ confint(svyratio(~des, ~pea, ps))
 
 #### CALIBRADO ####
 
-total <- read.xlsx("proyecciones_revision_2005/Totpais_deptos_edad_ambos_1996-2025.xls", 1)
-mdeo <- read.xlsx("proyecciones_revision_2005/Totpais_deptos_edad_ambos_1996-2025.xls", 11)
+# total <- read.xlsx("Talleres/Taller 2/proyecciones_revision_2005/Totpais_deptos_edad_ambos_1996-2025.xls", 1)
+# mdeo <- read.xlsx("Talleres/Taller 2/proyecciones_revision_2005/Totpais_deptos_edad_ambos_1996-2025.xls", 11)
 
 mdeoH2016 <- sum(mdeo[32:51, 22])
 mdeoM2016 <- sum(mdeo[56:74, 22])
