@@ -10,3 +10,6 @@ Coautora [@lcoudet](https://github.com/lcoudet)
 [El estimador de regresión para muestreo en dos etapas](https://github.com/daczarne/muestreo2/blob/master/Resumenes/15_reg_dos_etapas/15_reg_dos_etapas.pdf)  
 [El estimador calibrado](https://github.com/daczarne/muestreo2/blob/master/Resumenes/16_calibrado/16_calibrado.pdf)  
 
+## Presentación
+
+[No respuesta](https://github.com/daczarne/muestreo2/blob/master/Presentaci%C3%B3n%20no%20respuesta/No%20respuesta.pdf)  
