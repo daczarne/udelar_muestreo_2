@@ -8,3 +8,5 @@ Coautora [@lcoudet](https://github.com/lcoudet)
 
 [Muestreo asistido por modelos](https://github.com/daczarne/muestreo2/blob/master/Resumenes/14_asistido/14_asistido.pdf)  
 [El estimador de regresión para muestreo en dos etapas](https://github.com/daczarne/muestreo2/blob/master/Resumenes/15_reg_dos_etapas/15_reg_dos_etapas.pdf)  
+[El estimador calibrado](https://github.com/daczarne/muestreo2/blob/master/Resumenes/16_calibrado/16_calibrado.pdf)  
+
