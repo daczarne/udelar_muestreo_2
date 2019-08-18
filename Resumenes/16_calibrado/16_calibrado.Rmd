@@ -1,0 +1,158 @@
+---
+title: "El estimador calibrado"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+   - \DeclareMathOperator*{\di}{\mathrm{d}\!}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+El estimador calibrado se puede utilizar cuando la información auxiliar se presenta en forma de conteos marginales en una tabla de frecuencias de dos variables. Los ponderadores del estimador calibrado reproducen los conteos marginales. La observación $y_k$ tiene asociado el siguiente vector de información auxiliar: $\mathbf{x}_k = ( x_{k1}; \ldots; x_{kj}; \ldots; x_{kJ} )'$. Por lo tanto, $\mathbf{t}_x = \sum\nolimits_U \mathbf{x}_k = (t_{x_1}; \ldots; t_{x_j}; \ldots; t_{x_J} )'$, el cual puede ser visto como $( N \bar{x}_1; \ldots; N \bar{x}_j; \ldots; N \bar{x}_J )'$.
+
+Se toma una muestra aleatoria de la población, donde $d_k = \, ^1 \! / _{\pi_k}$, por lo tanto, $\hat{t}_{y_{\pi}} = \sum\nolimits_s d_k \, y_k$. El objetivo es modificar $d_k$ en función de la información auxiliar de forma que los nuevos pesos, $w_k$, sean cercanos a los pesos originales $d_k$. Estos nuevos pesos se obtienen minimizando una función de distancia sujeto a $\sum\nolimits_s w_k \, \mathbf{x}_k = \sum\nolimits_U \mathbf{x}_k$. Para ello consideramos una función de distancia $G(^{w_k} \! / _{d_k})$ con las siguientes propiedades:
+
+- $G$ es positiva y estrictamente convexa.
+
+- $G(1) = G'(1) = 0$
+
+- $G''(1) = 1$
+
+$G$ mide la distancia desde los pesos originales, $d_k$, a los nuevos pesos, $w_k$. La medida de distancia para toda la muestra $s$ viene dada por: $\sum\nolimits_s d_k \, G(^{w_k} \! / _{d_k})$. El problema de optimización es por tanto:
+$$\min_{w_k} \left\{ \mathscr{L} = \sum\nolimits_s d_k \, G(^{w_k} \! / _{d_k}) - \boldsymbol{\lambda}' \left( \sum\nolimits_s w_k \, \mathbf{x}_k - \sum\nolimits_U \mathbf{x}_k \right) \right\} $$
+
+$$\frac{ \partial \mathscr{L} }{ \partial w_k } = d_k \, \frac{ \di \, G(^{w_k} \! / _{d_k}) }{ \di \, (^{w_k} \! / _{d_k}) } \frac{ 1 }{ d_k } - \mathbf{x}_k' \, \boldsymbol{\lambda} = \mathbf{0} \Rightarrow \frac{ \di \, G(^{w_k} \! / _{d_k}) }{ \di \, (^{w_k} \! / _{d_k}) } = \mathbf{x}_k' \, \boldsymbol{\lambda} \Rightarrow$$
+$$\Rightarrow g(^{w_k} \! / _{d_k}) = \mathbf{x}_k' \, \boldsymbol{\lambda} \Rightarrow \, ^{w_k} \! / _{d_k} = g^{-1}(\mathbf{x}_k' \, \boldsymbol{\lambda}) \Rightarrow {\color{blue}\boxed{ w_k = d_k \, F(\mathbf{x}_k' \, \boldsymbol{\lambda}) }} \, \, {\color{teal} (1)}$$
+
+$$\frac{ \partial \mathscr{L} }{ \partial \boldsymbol{\lambda} } = \sum\nolimits_s w_k \, \mathbf{x}_k - \sum\nolimits_U \mathbf{x}_k = \mathbf{0} \Rightarrow {\color{blue}\boxed{ \sum\nolimits_s w_k \, \mathbf{x}_k = \sum\nolimits_U \mathbf{x}_k }} \, \, {\color{teal} (2)}$$
+
+Para hallar los nuevos pesos, primero debemos derivar $\boldsymbol{\lambda}$, resolviendo (generalmente) de forma númerica las \textbf{ecuaciones de calibración}:
+$$\left. 
+\begin{array}{c}
+{\color{teal} (1)} \\
+{\color{teal} (2)}
+\end{array} \right\}
+\Rightarrow
+\sum\nolimits_s d_k \, F(\mathbf{x}_k' \, \boldsymbol{\lambda} ) \, \mathbf{x}_k = \sum\nolimits_U \mathbf{x}_k$$
+
+Una vez determinado $\boldsymbol{\lambda} = (\lambda_1; \ldots; \lambda_J)'$, podemos derivar los \textbf{pesos calibrados} a partir de la ecuación ${\color{teal} (1)}$.
+
+El estimador calibrado viene dado por:
+$${\color{red} \star } \, \, \, \hat{t}_{y_{cal}} = \sum\nolimits_s w_k \, y_k = \sum\nolimits_s d_k \, F(\mathbf{x}_k' \, \boldsymbol{\lambda} ) \, y_k$$
+
+# Medidas de distancia
+
+Sean $x = \, ^{w_k} \! / _{d_k}$, $G$ una función de distancia, y $F$ la inversa de su derivada (de argumento $u$).
+
+\begin{enumerate}
+\item Método lineal:
+	\begin{itemize}
+	\item $G(x) = \frac{1}{2} (x - 1)^2 \, \, x \in \mathbb{R}$
+	\item $F(u) = 1 + u \, \, u \in \mathbb{R}$
+	\end{itemize}
+\item Método multiplicativo:
+	\begin{itemize}
+	\item $G(x) = x \log x - x + 1 \, \, x > 0$
+	\item $F(u) = e^u \, \, u > 0$
+	\end{itemize}
+\item Método logit $(L; \, U)$:
+	\begin{itemize}
+	\item Sean $L$ y $U$ dos números reales tales que $L < 1 < U$
+	\item Sea $A = \frac{ U-L }{(1-L)(U-1)}$
+	\item $G(x) = \left\{ \begin{array}{l}
+							\frac{1}{A} \left[ (x-L) \log \left( \frac{x-L}{1-L} \right) + (U-x) \log \left( \frac{U-x}{U-1} \right) \right] \, \, \text{ si } L < x < U \\
+							\\
+							+\infty \, \, \text{ en otro caso } \end{array} \right.$
+	\item $F(u) = \frac{ L(U-1) + U(1-L) e^{Au} }{ U-1 + (1-L) e^{Au} } \, \, u \in (L; \, U)$
+	\end{itemize}
+\item Método lineal truncado $(L; \, U)$:
+	\begin{itemize}
+	\item Sean $L$ y $U$ dos números reales tales que $L < 1 < U$
+	\item $G(x) = \left\{ \begin{array}{l}
+							\frac{1}{2} (x-1)^2 \, \, \text{ si } L < x < U \\
+							\\
+							+\infty \, \, \text{ en otro caso } \end{array} \right.$
+	\item $F(u) = \left\{ \begin{array}{l}
+							L \, \, \text{ si } u < L-1 \\
+							\\
+							1+u \, \, \text{ si } u \in [L-1, \, U-1] \\
+							\\
+							U \, \, \text{ si } u > U-1 \end{array} \right.$
+	\end{itemize}
+\end{enumerate}
+
+# Estimación de la varianza
+
+En el método lineal\footnote{Las propiedades para muestras grandes coinciden en todos los métodos.} $w_k=d_k (1 + \mathbf{x}_k' \, \boldsymbol{\lambda})$, donde $\boldsymbol{\lambda}$ es la solución a:
+$$\left( \sum\nolimits_s d_k \, \mathbf{x}_k \, \mathbf{x}_k' \right) \boldsymbol{\lambda} = \mathbf{t}_x - \hat{\mathbf{t}}_{x_{\pi}}$$
+
+El estimador generalizado de regresión es entonces:
+$$\hat{t}_{y_{greg}} = \sum\nolimits_s w_k \, y_k = \hat{t}_{y_{\pi}} + ( \mathbf{t}_x - \hat{\mathbf{t}}_{x_{\pi}} )' \hat{\mathbf{B}}$$
+donde $\hat{\mathbf{B}}$ es la solución a las ecuaciones normales:
+$$\left( \sum\nolimits_s d_k \, \mathbf{x}_k \, \mathbf{x}_k' \right) \hat{\mathbf{B}} = \sum\nolimits_ssss d_k \, \mathbf{x}_k \, \mathbf{y}_k$$ 
+
+Su varianza aproximada viene dada por:
+$${\color{red} \star } \, \, \, AV(\hat{t}_{y_{greg}}) = \sum\sum\nolimits_U \Delta_{kl} ( d_k \, E_k )( d_l \, E_l ) \, \, \text{ donde } E_k = y_k - \mathbf{x}_k' \mathbf{B}$$
+
+Un estimador para su varianza aproximada viene dada por:
+$${\color{red} \star } \, \, \, \hat{V}(\hat{t}_{y_{greg}}) = \sum\sum\nolimits_s \Delta_{kl}^{\checkmark} ( w_k \, e_k )( w_l \, e_l ) \, \, \text{ donde } e_k = y_k - \mathbf{x}_k' \hat{\mathbf{B}}$$
+
+# Post-estratificación completa
+
+Sea una tabla de datos con $r$ filas y $c$ columnas ($r \times c$ celdas). $U_{ij}$ contiene $N_{ij}$ elementos, $i = 1; \ldots; \, r$, $j = 1; \ldots; \, c$, de forma tal que $N= \sum\nolimits_i \sum\nolimits_j N_{ij}$. $N_{ij}$ es conocido $\forall i \forall j$, y se utilizan para la calibración.
+
+$\mathbf{x}_k$ está compuesto por $rc - 1$ componentes iguales a cero, y $1$ componente igual a uno, indicando la celda a la que pertenece el elemento $k$. De esta forma, $\mathbf{t}_x = \sum\nolimits_U \mathbf{x}_k = ( N_{11}; \ldots; \, N_{ij}; \ldots; \, N_{rc} )'$. Para todos los elementos en la $ij$-ésima celda, $\mathbf{x}_k' \, \boldsymbol{\lambda}$ es constante e igual a $\lambda_{ij}$.
+
+De las ecuaciones de calibración obtenemos que: $F(\mathbf{x}_k' \, \boldsymbol{\lambda}) = F(\lambda_{ij}) = \frac{ N_{ij} }{ \hat{N}_{ij} }$. Por lo tanto, los pesos calibrados están dados por $w_k = \frac{ d_k \, N_{ij} }{ \hat{N}_{ij} } \, \ \forall k \in (ij)$, independientemente de $F$. El estimador calibrado es entonces:
+$${\color{red} \star} \, \, \, \hat{t}_{y_{cal}} = \hat{t}_{y_{pos}} = \sum\nolimits_i \sum\nolimits_j N_{ij} \, \tilde{y}_{s_{ij}} \, \, \text{ donde } \, \, \tilde{y}_{s_{ij}} = \sum\nolimits_{s_{ij}} \frac{ y_k^{\checkmark} }{ \hat{N}_{ij} }$$
+
+# Post-estratificación incompleta
+
+En este caso el conteo por celda no es conocido o no puede utilizarse. $\mathbf{x}_k$ se define de forma tal de resumir los conteos marginales:
+$$\mathbf{x}_k = ( \delta_{1 \cdot k}; \ldots; \, \delta_{r \cdot k}; \, \delta_{ \cdot 1 k}; \ldots; \, \delta_{ \cdot c k} )'$$
+donde:
+\begin{center}
+\begin{tabular}{c c}
+	$\delta_{i \cdot k} = \left\{ \begin{array}{c l}
+									1 & \text{ si } k \in \text{ a la fila } i \\
+									0 & \text{ si } k \notin \text{ a la fila } i
+								  \end{array} \right.$
+	&
+	$\delta_{\cdot j k} = \left\{ \begin{array}{c l}
+									1 & \text{ si } k \in \text{ a la columna } j \\
+									0 & \text{ si } k \notin \text{ a la columna } j
+								  \end{array} \right.$
+\end{tabular}
+\end{center}
+Por lo tanto, $\mathbf{x}_k$ tiene dos entradas iguales a uno, y $r + c - 2$ entradas iguales a cero. Entonces, $\sum\nolimits_U \mathbf{x}_k = ( N_{1 \cdot}; \ldots, \, N_{r \cdot}; \, N_{\cdot 1}; \, \ldots; \, N_{\cdot c})'$.
+
+Se define $\boldsymbol{\lambda} = ( u_1; \ldots; \, u_r; \, v_1; \ldots; \, v_c )' \Rightarrow \mathbf{x}_k' \, \boldsymbol{\lambda} = u_i + v_j$ cuando $k \in (ij)$. Con $N_{ij} = \sum\nolimits_{s_{ij}} d_k$ las ecuaciones de calibración son:
+$$ \left\{ \begin{array}{l l}
+\sum\limits_{j=1}^{c} \hat{N}_{ij} \, F(u_i + v_j) = N_{ i \cdot } & i = 1; \ldots; \, r \\ \\
+\sum\limits_{i=1}^{r} \hat{N}_{ij} \, F(u_i + v_j) = N_{ \cdot j} & j = 1; \ldots; \, c \\
+\end{array} \right.$$
+Para resolver el sistema se debe fijar un componente igual a cero, por ejemplo $v_c = 0$. El sistema es invariante a qué componente sea fijada. Una vez resuelto el sistema se obtienen los \textbf{conteos calibrados} para las celdas, y los pesos calibrados:
+\begin{center}
+	\begin{tabular}{c c c}
+	${\color{red} \star} \, \, \, \hat{N}_{ij}^{w} = \hat{N}_{ij} F(u_i + v_j)$ & &	${\color{red} \star} \, \, \, w_k = d_k \, \frac{ \hat{N}_{ij}^{w} }{ \hat{N}_{ij} }$
+	\end{tabular}
+\end{center}
+
+El estimador calibrado queda definido como:
+$${\color{red} \star} \, \, \, \hat{t}_{y_{cal}} = \sum\nolimits_s w_k \, y_k = \sum\nolimits_i \sum\nolimits_j \hat{N}_{ij}^{w} \, \tilde{y}_{s_{ij}} = \hat{t}_{y_{marg}}$$
+
+Para el método multiplicativo los factores por celda vienen dados por:
+$$F(u_i + v_j) = e^{u_i + v_j} = \alpha_i \, \beta_j > 0 \, \, \text{ donde } \, \, \alpha_i = e^{u_i} \, \text{ y } \, \beta_j = e^{v_j}$$
+
+La varianza del estimador $\hat{t}_{y_{marg}}$ es apenas mayor a la de $\hat{t}_{y_{pos}}$ si las dos variables que conforman los márgenes explican la variable $Y$ mediante efectos aditivos, sin interacción.
