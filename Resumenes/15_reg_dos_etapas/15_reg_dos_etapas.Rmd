@@ -1,0 +1,205 @@
+---
+title: "El estimador de regresión para muestreo en dos etapas"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Consideremos una situación en la que la población se encuentra particionada en $N_I$ clusters, $U = \big\{U_1; \ldots; U_i; \ldots; U_{N_I} \big\}$, de forma tal que $\#U_i = N_i$, $U = \bigcup\limits_{i=1}^{N_I} U_i$, y $N = \sum\limits_{i=1}^{N_I} N_i$. En la primera etapa se obtiene una muestra de PSUs, $s_I$, de acuerdo al diseño $p_I(.)$ con probabilidades de inclusión $\pi_{I_i}$ y $\pi_{I_{ij}}$. Dadas las PSU, en la segunda etapa se obtiene una muestra dentro de cada PSU, $s_i$, de acuerdo con el diseño $p_i(.|s_I)$, con probabilidades de inclusión $\pi_{k|i}$ y $\pi_{kl|i}$. En esta etapa se asume independencia e invarainza. La muestra queda conformada por $s = \bigcup\limits_{i \in s_I} s_i$ de tamaño $n_S = \sum\limits_{i \in s_I} n_i$. Para cada elemento en la muestra se observa la variable de interés $y_k$.
+
+La información auxiliar referente a las unidades se anotará como $\mathbf{x}_k$. La información auxiliar referente a las PSU se anotará como $\mathbf{u}_i$. Quedan definidas entonces las siguientes matrices:
+$$\mathbf{U}_{N_I \times J} = \begin{bmatrix}
+u_{11} & u_{12} & \cdots & u_{1\nu} & \cdots & u_{1J} \\
+u_{21} & u_{22} & \cdots & u_{2\nu} & \cdots & u_{2J} \\
+\vdots & \vdots & 		 & \vdots	& 		 & \vdots \\
+u_{i1} & u_{i2} & \cdots & u_{i\nu} & \cdots & u_{iJ} \\
+\vdots & \vdots & 		 & \vdots	& \ddots & \vdots \\
+u_{N_I1} & u_{N_I2} & \cdots & u_{N_I\nu} & \cdots & u_{N_IJ}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\mathbf{u}_1 \\
+\mathbf{u}_2 \\
+\vdots \\
+\mathbf{u}_i \\
+\vdots \\
+\mathbf{u}_{N_I}
+\end{bmatrix}$$
+
+$$\mathbf{X}_{N \times J} = \begin{bmatrix}
+x_{11} & x_{12} & \cdots & x_{1\nu} & \cdots & x_{1J} \\
+x_{21} & x_{22} & \cdots & x_{2\nu} & \cdots & x_{2J} \\
+\vdots & \vdots & 		 & \vdots	& 		 & \vdots \\
+x_{k1} & x_{k2} & \cdots & x_{k\nu} & \cdots & x_{kJ} \\
+\vdots & \vdots & 		 & \vdots	& \ddots & \vdots \\
+x_{N1} & x_{N2} & \cdots & x_{N\nu} & \cdots & x_{NJ}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\mathbf{x}_1 \\
+\mathbf{x}_2 \\
+\vdots \\
+\mathbf{x}_k \\
+\vdots \\
+\mathbf{x}_{N}
+\end{bmatrix}$$
+
+Se desprenden tres posibles casos:
+
+- **Caso A**: $\mathbf{u}_i$ está disponible para todas las PSU.
+
+- **Caso B**: $\mathbf{x}_k$ está disponible para todos los elementos.
+
+- **Caso C**: $\mathbf{x}_k$ está disponible solo para los elementos en las PSU seleccionadas en la primera etapa.
+
+# Caso A
+
+Supongamos que el scatter de los $N_I$ puntos $(t_{y_i}; \, \mathbf{u}_i)$ puede describirse mediante el siguiente modelo:
+\begin{center}
+	\begin{tabular}{c c c}
+	$E_\xi(y_k) = \mathbf{u}_i' \boldsymbol{\beta}_I$ & & $V_\xi(y_k) = \sigma_{I_i}^2$
+	\end{tabular}
+\end{center}
+donde los totales por cluster, $t_{y_i}$, son independientes bajo el modelo especificado. $\boldsymbol{\beta}_I$ puede ser estimado por:
+
+- en un censo: $\mathbf{B}_I = \left( \sum\nolimits_{U_I} \frac{ \mathbf{u}_i \mathbf{u}_i' }{ \sigma_{I_i}^2 } \right)^{-1} \left( \sum\nolimits_{U_I} \frac{ \mathbf{u}_i t_{y_i} }{ \sigma_{I_i}^2 } \right)$ 
+
+- en una muestra: $\hat{\mathbf{B}}_I = \left( \sum\nolimits_{s_I} \frac{ \mathbf{u}_i \mathbf{u}_i' }{ \sigma_{I_i}^2 \pi_{I_i} } \right)^{-1} \left( \sum\nolimits_{s_I} \frac{ \mathbf{u}_i t_{y_i}^* }{ \sigma_{I_i}^2 \pi_{I_i} } \right)$
+
+donde $t_{y_i}^* = \hat{t}_{y_{i_{\pi}}} = \sum\nolimits_{s_i} \frac{y_k}{\pi_{k|i}}$. Se definen los valores ajustados $t_{y_i}^0 = \mathbf{u}_i' \mathbf{B}_I$, las predicciones $\hat{t}_{y_{i_p}} = \mathbf{u}_i' \hat{\mathbf{B}}_I$, y ambos residuos $D_i = t_{y_i} - t_{y_i}^0 \, \, \forall i \in U_I$ (inobservables), $d_i = t_{y_i}^* - \hat{t}_{y_{i_p}} \, \, \forall i \in s_I$ (observables).
+
+Se define el estimador de regresión como:
+$$\hat{t}_{y_{r_A}} = \sum\nolimits_{U_I} \hat{t}_{y_{i_p}} + \sum\nolimits_{s_I} \frac{ {\color{magenta} t_{y_i}^*} - \hat{t}_{y_{i_p}} }{ \pi_{I_i} } = \sum\nolimits_{U_I} \hat{t}_{y_{i_p}} + {\color{magenta} \sum\nolimits_{s_I} \frac{ t_{y_i}^* }{ \pi_{I_i} } } - \sum\nolimits_{s_I} \frac{ \hat{t}_{y_{i_p}} }{ \pi_{I_i} } =$$
+$$= \sum\nolimits_{U_I} \hat{t}_{y_{i_p}} + {\color{magenta} \sum\nolimits_{s_I} \frac{ 1 }{ \pi_{I_i} } \sum\nolimits_{s_i} \frac{ y_k }{ \pi_{k|i} } } - \sum\nolimits_{s_I} \frac{ \hat{t}_{y_{i_p}} }{ \pi_{I_i} } =$$
+$$= \sum\nolimits_{U_I} \hat{t}_{y_{i_p}} + {\color{magenta} \sum\nolimits_{s_I} \sum\nolimits_{s_i} \frac{ y_k }{ \pi_{k|i} \, \pi_{I_i} } } - \sum\nolimits_{s_I} \frac{ \hat{t}_{y_{i_p}} }{ \pi_{I_i} } =$$
+$$= \sum\nolimits_{U_I} \hat{t}_{y_{i_p}} + {\color{magenta} \sum\nolimits_{s} \frac{ y_k }{ \pi_{k} } } - \sum\nolimits_{s_I} \frac{ \hat{t}_{y_{i_p}} }{ \pi_{I_i} } = \sum\nolimits_{U_I} \hat{t}_{y_{i_p}} + {\color{magenta} \sum\nolimits_{s} y_k^{\checkmark} } - \sum\nolimits_{s_I} \frac{ \hat{t}_{y_{i_p}} }{ \pi_{I_i} } =$$
+$$= {\color{magenta} \hat{t}_{y_{\pi}} } + \sum\nolimits_{U_I} {\color{cyan} \hat{t}_{y_{i_p}} } - \sum\nolimits_{s_I} \frac{ {\color{cyan} \hat{t}_{y_{i_p}} } }{ \pi_{I_i} } = \hat{t}_{y_{\pi}} + \sum\nolimits_{U_I} {\color{cyan} \mathbf{u}_i'\hat{\mathbf{B}}_I } - \sum\nolimits_{s_I} \frac{ {\color{cyan} \mathbf{u}_i'\hat{\mathbf{B}}_I } }{ \pi_{I_i} } =$$
+$$= \hat{t}_{y_{\pi}} + \left( \sum\nolimits_{U_I} {\color{cyan} \mathbf{u}_i } - \sum\nolimits_{s_I} \frac{ {\color{cyan} \mathbf{u}_i } }{ \pi_{I_i} } \right)' {\color{cyan} \hat{\mathbf{B}}_I } $$
+por lo tanto, el estimador de regresión no es más que el estimador $\pi$, más un término de ajuste, determinado por la información auxiliar sobre las PSU. El estimador también puede escribirse como un estimador-$\pi$ g-ponderado, partiendo de la expresión anterior:
+$$\hat{t}_{y_{r_A}} = {\color{orange} \sum\nolimits_{s_I} \frac{ t_{y_i}^* }{ \pi_{I_i} } } + \left( \sum\nolimits_{U_I} \mathbf{u}_i - \sum\nolimits_{s_I} \frac{ \mathbf{u}_i }{ \pi_{I_i} } \right)' \left( \sum\nolimits_{s_I} \frac{ \mathbf{u}_i \mathbf{u}_i' }{ \sigma_{I_i}^2 \pi_{I_i} } \right)^{-1} \left( {\color{orange} \sum\nolimits_{s_I} } \frac{ \mathbf{u}_i {\color{orange} t_{y_i}^* } }{ \sigma_{I_i}^2 {\color{orange} \pi_{I_i} } } \right) =$$
+$$= {\color{orange} \sum\nolimits_{s_I} \frac{ t_{y_i}^* }{ \pi_{I_i} } } \underbrace{ \left[ 1 + \left( \sum\nolimits_{U_I} \mathbf{u}_i - \sum\nolimits_{s_I} \frac{ \mathbf{u}_i }{ \pi_{I_i} } \right)' \left( \sum\nolimits_{s_I} \frac{ \mathbf{u}_i \mathbf{u}_i' }{ \sigma_{I_i}^2 \pi_{I_i} } \right)^{-1} \frac{ \mathbf{u}_i }{ \sigma_{I_i}^2 } \right] }_{g_{i_{s_I}}} = \sum\nolimits_{s_I} \frac{ t_{y_i}^* \, g_{i_{s_I}} }{ \pi_{I_i} }$$
+
+Para hallar el estimador de la varianza primero conviene expresar el estimador de regresión en términos del error de estimación:
+$$\hat{t}_{y_{r_A}} - {\color{magenta} t_y } = \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} \, t_{y_i}^* }{ \pi_{I_i} } - {\color{magenta} t_y } \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_A}} - {\color{magenta} t_y } = \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} \, t_{y_i}^* }{ \pi_{I_i} } - {\color{magenta} \sum\nolimits_{U_I} t_{y_i} } + {\color{cyan} \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} t_{y_i} }{ \pi_{I_i} } } - {\color{cyan} \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} t_{y_i} }{ \pi_{I_i} } } \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_A}} - t_y = \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} }{ \pi_{I_i} } \big( t_{y_i}^* - t_{y_i} \big) + \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} t_{y_i} }{ \pi_{I_i} } - \sum\nolimits_{U_I} {\color{magenta} t_{y_i} } \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_A}} - t_y = \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} }{ \pi_{I_i} } \big( t_{y_i}^* - t_{y_i} \big) + \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} t_{y_i} }{ \pi_{I_i} } - \sum\nolimits_{U_I} {\color{magenta} (\mathbf{u}_i' \mathbf{B} + D_i ) } \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_A}} - t_y = \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} }{ \pi_{I_i} } \big( t_{y_i}^* - t_{y_i} \big) + \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} {\color{cyan} t_{y_i} } }{ \pi_{I_i} } - \sum\nolimits_{U_I} {\color{magenta} \mathbf{u}_i' \mathbf{B} } - \sum\nolimits_{U_I} {\color{magenta} D_i } \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_A}} - t_y = \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} }{ \pi_{I_i} } \big( t_{y_i}^* - t_{y_i} \big) + \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} {\color{cyan} ( \mathbf{u}_i' \mathbf{B} + D_i ) } }{ \pi_{I_i} } - \sum\nolimits_{U_I} \mathbf{u}_i' \mathbf{B} - \sum\nolimits_{U_I} D_i \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_A}} - t_y = \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} }{ \pi_{I_i} } \big( t_{y_i}^* - t_{y_i} \big) + \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} {\color{cyan} \mathbf{u}_i' \mathbf{B} } }{ \pi_{I_i} } + \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} {\color{cyan} D_i } }{ \pi_{I_i} } - \sum\nolimits_{U_I} \mathbf{u}_i' \mathbf{B} - \sum\nolimits_{U_I} D_i \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_A}} - t_y = \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} }{ \pi_{I_i} } \big( t_{y_i}^* - t_{y_i} \big) + \sum\nolimits_{U_I} {\color{cyan} \mathbf{u}_i' \mathbf{B} } + \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} {\color{cyan} D_i } }{ \pi_{I_i} } - \sum\nolimits_{U_I} \mathbf{u}_i' \mathbf{B} - \sum\nolimits_{U_I} D_i \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_A}} - t_y = \underbrace{ \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} }{ \pi_{I_i} } \big( t_{y_i}^* - t_{y_i} \big) }_{ R_{A_s} } + \underbrace{ \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} D_i }{ \pi_{I_i} } - \sum\nolimits_{U_I} D_i }_{ Q_{A_{s_I}} } \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_A}} - t_y = Q_{A_{s_I}} + R_{A_s}$$
+
+Luego, la varianza viene dada por:
+$$ V \big( \hat{t}_{y_{r_A}} - t_y \big) = V \big( \hat{t}_{y_{r_A}} \big) =$$
+$$= V_I \Big[ \underbrace{ E_{II} \big( Q_{A_{s_I}} | s_I \big) }_{ Q_{A_{s_I}} } \Big] + E_I \Big[ \underbrace{ V_{II} \big( Q_{A_{s_I}} | s_I \big) }_{=0} \Big] + V_I \Big[ \underbrace{ E_{II} \big( R_{A_s} | s_I \big) }_{=0} \Big] + E_I \Big[ V_{II} \big( R_{A_s} | s_I \big) \Big] = $$
+$$= \underbrace{ V_I \Big( Q_{A_{s_I}} \big) }_{ V_{APSU} } + \underbrace{ E_I \Big[ V_{II} \big( R_{A_s} | s_I \big) \Big] }_{ V_{ASSU} } = V_I \left( \sum\nolimits_{s_I} \frac{ g_{i_{s_I}} \, D_i }{ \pi_{I_i} } \right) + E_I \left( \sum\nolimits_{s_I} \frac{ g_{i_{s_I}}^2 \, V_i }{ \pi_{I_i}^2 } \right) $$
+\begin{center}
+donde $V_i = \sum\sum\nolimits_{U_I} \Delta_{kl} \, y_{k|i}^{\checkmark} \, y_{l|i}^{\checkmark}$ con $\, y_{k|i}^{\checkmark} = \frac{y_k}{\pi_{k|i}}$
+\end{center}
+
+Un estimador de la varianza viene dado por:
+$${\color{red} \star} \, \, \, \hat{V} \big( \hat{t}_{y_{r_A}} \big) = \hat{V}_{APSU} + \hat{V}_{ASSU}$$
+$${\color{red} \star} \, \, \, \hat{V}_{APSU} = \sum\sum\nolimits_{s_I} \Delta_{I_{ij}}^{\checkmark} \, \frac{ g_{i_{s_I}} \, d_i }{ \pi_{I_i} } \, \frac{ g_{j_{s_I}} \, d_j }{ \pi_{I_j} } - \sum\nolimits_{s_I} \frac{1}{\pi_{I_i}} \left( \frac{1}{\pi_{I_i}} - 1 \right) g_{i_{s_I}}^2 \, \hat{V}_i$$
+$$\text{donde } \, \, d_i = t_{y_i}^* - \mathbf{u}_i' \hat{\mathbf{B}}_I$$
+$${\color{red} \star} \, \, \, \hat{V}_{ASSU} = \sum\nolimits_{s_I} \frac{ g_{i_{S_I}}^2 \, \hat{V}_i }{ \pi_{I_i}^2 } $$
+$${\color{red} \star} \, \, \, \hat{V}_i = \sum\sum\nolimits_{s_i} \Delta_{kl|i}^{\checkmark} \, \frac{ y_k }{ \pi_{k|i} } \, \frac{ y_l }{ \pi_{l|i} }$$
+
+$\hat{V}_{APSU}$ puede justificarse dado que:
+$${\color{red} \bullet} \, \, \, E_{II} (d_i^2) = E_{II} \Big[ \big( t_{y_i}^* - \mathbf{u}_i' \hat{\mathbf{B}}_I \big) \Big]^2 \doteq E_{II} \Big[ \big( t_{y_i}^* - \mathbf{u}_i' \mathbf{B}_I \big) \Big]^2 =$$
+$$= \Big[ E_{II} \big( t_{y_i}^* - \mathbf{u}_i' \mathbf{B}_I \big)^2 \Big] + V_{II} \Big( t_{y_i}^* - \mathbf{u}_i' \Big) = D_i^2 + V_i \: \: \: \forall i=j$$
+$${\color{red} \bullet} \, \, \, E_{II} (d_i \, d_j) \doteq D_i \, D_j \: \: \: \forall i \neq j$$
+
+$E_{II} (\hat{V}_i) = V_i$, por lo tanto, $E_{II} (\hat{V}_{APSU}) \doteq \sum\sum\nolimits_{s_I} \Delta_{I_{ij}}^{\checkmark} \, \frac{ g_{i_{s_I}} \, D_i }{ \pi_{I_i} } \, \frac{ g_{j_{s_I}} \, D_j }{ \pi_{I_j} }$ de donde obtenemos que $E(\hat{V}_{APSU}) = E_I \Big[ E_{II} \big( \hat{V}_{APSU} | s_I \big) \Big] \doteq AV_{APSU}$. Por otro lado,
+$$E( \hat{V}_{ASSU} ) = E_I \left[ E_{II} \left( \sum\nolimits_{s_I} \frac{ g_{i_{s_I}}^2 \, \hat{V}_i }{ \pi_{I_i}^2 } \, \Bigg| \, s_I \right) \right] = E_I \left( \sum\nolimits_{s_I} \frac{ g_{i_{s_I}}^2 \, \hat{V}_i }{ \pi_{I_i}^2 } \right)$$
+
+Por lo que $\hat{V}_{ASSU}$ es insesgada para $V_{ASSU}$. Entonces, $\hat{V}( \hat{t}_{y_{r_A}} )$ es insesgada para $V( \hat{t}_{y_{r_A}} )$.
+
+# Caso B
+
+En el caso B la información auxiliar es conocida para todas las unidades del marco. Se asume que el scatter de puntos puede ser presentado por el modelo:
+\begin{center}
+	\begin{tabular}{c c c}
+	$E_{\xi} (y_k) = \mathbf{x}_k' \boldsymbol{\beta}$ & & $V_{\xi} (y_k) = \sigma^2_k$
+	\end{tabular}
+\end{center}
+donde $\boldsymbol{\beta}$ es estimado por $\mathbf{B} = \left( \sum\nolimits_U \frac{ \mathbf{x}_k \, \mathbf{x}_k' }{ \sigma^2_k } \right)^{-1} \left( \sum\nolimits_U \frac{ \mathbf{x}_k \, y_k }{ \sigma^2_k } \right)$. Los residuos vienen dados por: $E_k = y_k - y_k^0 = y_k - \mathbf{x}_k' \mathbf{B}$. El tamaño de muestra es aleatorio dado que $n = \sum\nolimits_{s_I} n_i$.
+
+$\mathbf{B}$ puede estimarse mediante $\hat{\mathbf{B}} = \left( \sum\nolimits_s \frac{ \mathbf{x}_k \, \mathbf{x}_k' }{ \pi_k \, \sigma^2_k } \right)^{-1} \left( \sum\nolimits_s \frac{ \mathbf{x}_k \, y_k }{ \pi_k \, \sigma^2_k } \right)$. Los valores ajustados vienen dados por $\hat{y}_k = \mathbf{x}_k' \mathbf{B}$, y los residuos por: $e_{k_s} = y_k - \hat{y}_k$. De esta forma, el estimador de regresión queda determinado como:
+$${\color{red} \star } \, \, \, \hat{t}_{y_{r_B}} = \sum\nolimits_U \hat{y}_k + \sum\nolimits_s \frac{ e_{k_s} }{ \pi_k } = \sum\nolimits_{U_I} \sum\nolimits_{U_i} \hat{y}_k + \sum\nolimits_{s_I} \frac{ 1 }{ \pi_{I_i} } \sum\nolimits_{s_i} \frac{ y_k - \hat{y}_k }{ \pi_{k|i} } $$
+
+También podemos expresar el estimador como un estimador que corrige al estimador-$\pi$:
+$${\color{red} \star } \, \, \, \hat{t}_{y_{r_B}} = \sum\nolimits_U \hat{y}_k + \sum\nolimits_s \frac{ e_{k_s} }{ \pi_k } = \sum\nolimits_{U} \mathbf{x}_k' \hat{\mathbf{B}} + \sum\nolimits_s \frac{ y_k - \hat{y}_k }{ \pi_k } =$$
+$$= \sum\nolimits_{U} \mathbf{x}_k' \hat{\mathbf{B}} + {\color{cyan} \sum\nolimits_s \frac{y_k}{\pi_k} } - \sum\nolimits_s \frac{ {\color{magenta} \hat{y}_k } }{ \pi_k } = \sum\nolimits_{U} \mathbf{x}_k' \hat{\mathbf{B}} + {\color{cyan} \hat{t}_{y_{\pi}} } - \sum\nolimits_s \frac{ {\color{magenta} \mathbf{x}_k' \hat{\mathbf{B}} } }{ \pi_k } =$$
+$$= \hat{t}_{y_{\pi}} + \left( \sum\nolimits_{U} \mathbf{x}_k' - \sum\nolimits_s \frac{ \mathbf{x}_k' }{ \pi_k } \right)' \hat{\mathbf{B}} = \color{blue}\boxed{ \hat{t}_{y_{\pi}} + \left( \mathbf{t}_x - \hat{\mathbf{t}}_{x_{\pi}} \right)' \hat{\mathbf{B}} }$$
+
+Alternativamente, podríamos expresarlo como un estimador-$\pi$ $g$-ponderado:
+$${\color{red} \star } \, \, \, \hat{t}_{y_{r_B}} = \hat{t}_{y_{\pi}} + \left( \mathbf{t}_x - \hat{\mathbf{t}}_{x_{\pi}} \right)' \hat{\mathbf{B}} = \sum\nolimits_s \frac{ y_k }{ \pi_k } + \left( \mathbf{t}_x - \hat{\mathbf{t}}_{x_{\pi}} \right)' \hat{\mathbf{T}}^{-1} \left( \sum\nolimits_s \frac{ \mathbf{x}_k \, y_k }{ \pi_k \, \sigma^2_k } \right) =$$
+$$= \sum\nolimits_s \frac{ y_k }{ \pi_k } \underbrace{ \left[ 1 + \left( \mathbf{t}_x - \hat{\mathbf{t}}_{x_{\pi}} \right)' \hat{\mathbf{T}}^{-1} \frac{ \mathbf{x}_k }{ \sigma^2_k } \right] }_{ g_{k_s} } = \color{blue}\boxed{ \sum\nolimits_s \frac{ g_{k_s} \, y_k }{ \pi_k } }$$
+
+Para derivar su varianza, es conveniente expresar el estimador en términos de su error de estimación:
+$$\hat{t}_{y_{r_B}} - t_y =  \underbrace{ \sum\nolimits_{s_I} \frac{ t_{E_i} }{ \pi_{I_i} } - \sum\nolimits_{U_I} t_{E_i} }_{ Q_{B_{s_i}} } + \underbrace{ \sum\nolimits_{s_I} \frac{ 1 }{ \pi_{I_i} } \left( \sum\nolimits_{s_i} \frac{ g_{k_{s_B}} \, E_k }{ \pi_{k|i} } - \sum\nolimits_{U_i} E_k \right) }_{ R_{B_s} }$$
+$$\text{ donde } \, \, E_k = y_k - y_k^0 = y_k - \mathbf{x}_k' \mathbf{B} \, \, \text{ y } , \, t_{E_i} = \sum\nolimits_{U_i} E_k$$
+
+La varianza del estimador viene dada por:
+$${\color{red} \star} \, \, \, AV \big( \hat{t}_{y_{r_B}} \big) = AV_{BPSU} + AV_{BSSU}$$
+$${\color{red} \star} \, \, \, AV_{BPSU} = \sum\sum\nolimits_{U_I} \Delta_{I_{il}} \, \frac{ t_{E_i} }{ \pi_{I_i} } \, \frac{ t_{E_j} }{ \pi_{I_j} }$$
+$${\color{red} \star} \, \, \, AV_{BSSU} = \sum\nolimits_{U_I} \frac{ V_{E_i} }{ \pi_{I_i} }$$
+$${\color{red} \star} \, \, \, V_{E_i} = \sum\sum\nolimits_{U_i} \Delta_{kl|i} \, \frac{ E_k }{ \pi_{k|i} } \, \frac{ E_l }{ \pi_{l|i} }$$
+
+Un estimador para la varianza del estimador viene dado por:
+$${\color{red} \star} \, \, \, \hat{V} \big( \hat{t}_{y_{r_B}} \big) = \hat{V}_{BPSU} + \hat{V}_{BSSU}$$
+$${\color{red} \star} \, \, \, \hat{V}_{BPSU} = \sum\sum\nolimits_{s_I} \Delta_{I_{il}}^{\checkmark} \, \frac{ \hat{t}_{E_i} }{ \pi_{I_i} } \, \frac{ \hat{t}_{E_j} }{ \pi_{I_j} } - \sum\nolimits_{s_I} \frac{ 1 }{ \pi_{I_i} } \left( \frac{ 1 }{ \pi_{I_i} } - 1 \right) \hat{V}_{B_{E_i}}$$
+$${\color{red} \star} \, \, \, \hat{V}_{BSSU} = \sum\nolimits_{s_I} \frac{ \hat{V}_{B_{E_i}} }{ \pi_{I_i}^2 }$$
+$${\color{red} \star} \, \, \, \hat{V}_{B_{E_i}} = \sum\sum\nolimits_{s_i} \Delta_{kl|i}^{\checkmark} \, \frac{ g_{k_{s_B}} \, e_{k_s} }{ \pi_{k|i} } \, \frac{ g_{l_{s_B}} \, e_{l_s} }{ \pi_{l|i} }$$
+$$\text{ donde } \, \, \hat{t}_{E_i} = \sum\nolimits_{s_i} \frac{ g_{k_{s_B}} \, e_{k_s} }{ \pi_{k|i} }$$
+
+# Caso C
+
+En el caso C la información auxiliar es conocida solo para las unidades pertenecientes a las PSU que fueron sorteadas en la primera etapa. Se asume que el scatter de puntos puede ser presentado por el modelo:
+\begin{center}
+	\begin{tabular}{c c c}
+	$E_{\xi} (y_k) = \mathbf{x}_k' \boldsymbol{\beta}$ & & $V_{\xi} (y_k) = \sigma^2_k$
+	\end{tabular}
+\end{center}
+donde $\boldsymbol{\beta}$ es estimado por $\mathbf{B} = \left( \sum\nolimits_U \frac{ \mathbf{x}_k \, \mathbf{x}_k' }{ \sigma^2_k } \right)^{-1} \left( \sum\nolimits_U \frac{ \mathbf{x}_k \, y_k }{ \sigma^2_k } \right)$. Los residuos vienen dados por: $E_k = y_k - y_k^0 = y_k - \mathbf{x}_k' \mathbf{B}$. El tamaño de muestra es aleatorio dado que $n = \sum\nolimits_{s_I} n_i$.
+
+$\mathbf{B}$ puede estimarse mediante $\hat{\mathbf{B}} = \left( \sum\nolimits_s \frac{ \mathbf{x}_k \, \mathbf{x}_k' }{ \pi_k \, \sigma^2_k } \right)^{-1} \left( \sum\nolimits_s \frac{ \mathbf{x}_k \, y_k }{ \pi_k \, \sigma^2_k } \right)$. Los valores ajustados vienen dados por $\hat{y}_k = \mathbf{x}_k' \mathbf{B}$, y los residuos por: $e_{k_s} = y_k - \hat{y}_k$. De esta forma, el estimador de regresión queda determinado como:
+$${\color{red} \star } \, \, \, \hat{t}_{y_{r_C}} = \sum\nolimits_{s_I} \frac{ \hat{t}_{y_{i_r}} }{ \pi_{I_i} } \, \, \text{ donde } \, \, \hat{t}_{y_{i_r}} = \sum\nolimits_{U_i} \hat{y}_k + \sum\nolimits_{s_i} \frac{ y_k - \hat{y}_k }{ \pi_{k|i} } \Rightarrow$$
+$$\Rightarrow \hat{t}_{y_{r_C}} = \sum\nolimits_{s_I} \frac{ t_{\hat{y}_i} }{ \pi_{I_i} } + \sum\nolimits_{s_I} \frac{ 1 }{ \pi_{I_i} } \sum\nolimits_{s_i} \frac{ y_k - \hat{y}_k }{ \pi_{k|i}} = \sum\nolimits_{s_I} \frac{ t_{\hat{y}_i} }{ \pi_{I_i} } + \sum\nolimits_s \frac{ y_k - \hat{y}_k }{ \pi_k }$$
+$$\text{ donde } \, \, t-{\hat{y}_i} = \sum\nolimits_{U_i} \hat{y}_k$$
+
+Su expresión como estimador-$\pi$ $g$-ponderado es:
+$${\color{red} \star } \, \, \, \hat{t}_{y_{r_C}} = \sum\nolimits_s \frac{ g_{k_{s_C}} \, y_k }{ \pi_k } \, \, \text{ donde } \, \, g_{k_{s_C}} = 1 + \left[ \sum\nolimits_{s_I} \frac{ \mathbf{t}_{x_i} - \hat{\mathbf{t}}_{x_{i_{\pi}}} }{ \pi_{I_i} } \right]' \hat{\mathbf{T}}^{-1} \frac{ \mathbf{x}_k }{ \sigma^2_k }$$
+
+Para derivar su varianza es conveniente expresar el estimador de regresión en términos de su error de estimación:
+$$ \hat{t}_{y_{r_C}} - t_y = \underbrace{ \sum\nolimits_{s_I} \frac{ t_{y_i} }{ \pi_{I_i} } - \sum\nolimits_{U_I} t_{y_i} }_{ Q_{C_{s_I}} } + \underbrace{ \sum\nolimits_{s_I} \frac{ 1 }{ \pi_{I_i} } \left( \sum\nolimits_{s_i} \frac{ g_{k_{s_C}} \, E_k }{ \pi_{k|i} } - \sum\nolimits_{U_i} E_k \right) }_{ R_{C_s} }$$
+
+La varianza del estimador viene dada por:
+$${\color{red} \star } \, \, \, AV(\hat{t}_{y_{r_C}}) = AV_{CPSU} + AV_{CSSU}$$
+$${\color{red} \star } \, \, \, AV_{CPSU} = \sum\sum\nolimits_{U_I} \Delta_{I_{ij}} \, \frac{ t_{y_i} }{ \pi_{I_i} } \, \frac{ t_{y_j} }{ \pi_{I_j} } $$
+$${\color{red} \star } \, \, \, AV_{CSSU} = \sum\nolimits_{U_I} \frac{ V_{E_i} }{ \pi_{I_i} }$$
+$${\color{red} \star } \, \, \, V_{E_i} = \sum\sum\nolimits_{U_i} \Delta_{kl|i} \, \frac{ E_k }{ \pi_{k|i} } \, \frac{ E_l }{ \pi_{l|i} }$$
+$$\text{ donde } \, \, t_{y_i} = \sum\nolimits_{U_i} y_k$$
+
+Un estimador para la varianza del estimador viene dado por:
+$${\color{red} \star } \, \, \, \hat{V}(\hat{t}_{y_{r_C}}) = \hat{V}_{CPSU} + \hat{V}_{CSSU}$$
+$${\color{red} \star } \, \, \, \hat{V}_{CPSU} = \sum\sum\nolimits_{s_I} \Delta_{I_{ij}}^{\checkmark} \, \frac{ \hat{t}_{y_{i_{\pi}}} }{ \pi_{I_i} } \, \frac{ \hat{t}_{y_{j_{\pi}}} }{ \pi_{I_j} } - \sum\nolimits_{s_I} \frac{ 1 }{ \pi_{I_i} } \left( \frac{ 1 }{ \pi_{I_i} } - 1 \right) \hat{V}_i$$
+$${\color{red} \star } \, \, \, \hat{V}_{CSSU} = \sum\nolimits_{U_I} \frac{ \hat{V}_{C_{E_i}} }{ \pi_{I_i}^2 }$$
+$${\color{red} \star } \, \, \, \hat{V}_{i} = \sum\sum\nolimits_{s_i} \Delta_{kl|i}^{\checkmark} \, \frac{ y_k }{ \pi_{k|i} } \, \frac{ y_l }{ \pi_{l|i} }$$
+$${\color{red} \star } \, \, \, \hat{V}_{C_{E_i}} = \sum\sum\nolimits_{s_i} \Delta_{kl|i}^{\checkmark} \, \frac{ g_{k_{s_C}} \, e_{k_s} }{ \pi_{k|i} } \, \frac{ g_{l_{s_C}} \, e_{l_s} }{ \pi_{l|i} } $$
+$$\text{ donde } \, \, \hat{t}_{y_{i_{\pi}}} = \sum\nolimits_{s_i} \frac{ y_k }{ \pi_{k|i} }$$
