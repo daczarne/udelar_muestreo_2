@@ -1,4 +1,4 @@
-# muestreo2 ![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)
+# muestreo2 ![archived](https://img.shields.io/badge/lifecycle-archived-red.svg)
 Resúmenes de Muestreo de Poblaciones Finitas 2  
 IESTA - FCEA - UDELAR  
 Edición 2017  
