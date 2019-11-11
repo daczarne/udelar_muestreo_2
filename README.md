@@ -2,7 +2,6 @@
 Resúmenes de Muestreo de Poblaciones Finitas 2  
 IESTA - FCEA - UDELAR  
 Edición 2017  
-Coautora [@lcoudet](https://github.com/lcoudet)
 
 ## Apuntes
 
